@@ -42,6 +42,8 @@ void ASTU_Character::BeginPlay()
 	OnHelthChanged(HealthComponent->GetHealth());
 	HealthComponent->OnDeath.AddUObject(this, &ASTU_Character::OnDeath);
 	HealthComponent->OnHealthChanged.AddUObject(this, &ASTU_Character::OnHelthChanged);
+
+	LandedDelegate.AddDynamic(this, &ASTU_Character::OnGroundLanded);
 }
 
 void ASTU_Character::OnHelthChanged(float Health)
@@ -114,4 +116,15 @@ void ASTU_Character::OnDeath()
 	GetCharacterMovement()->DisableMovement();
 
 	SetLifeSpan(5.0f); //Destroy Actor in 5 sec
+}
+
+void ASTU_Character::OnGroundLanded(const FHitResult& Hit)
+{
+	const auto FallVelocityZ = -GetCharacterMovement()->Velocity.Z;
+
+	if (FallVelocityZ < LandedDamageVelocity.X) return;
+
+	const auto FinalDamage = FMath::GetMappedRangeValueClamped(LandedDamageVelocity, LandedDamage, FallVelocityZ);
+
+	TakeDamage(FinalDamage, FDamageEvent{}, nullptr, nullptr);
 }
