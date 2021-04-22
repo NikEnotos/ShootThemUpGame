@@ -8,6 +8,7 @@
 #include "Components/STU_CharacterMovementComponent.h"
 #include "Components/STU_HealthComponent.h"
 #include "Components/TextRenderComponent.h"
+#include "Weapon/STU_Base_Weapon.h"
 
 // Sets default values
 ASTU_Character::ASTU_Character(const FObjectInitializer& ObjInit)
@@ -44,6 +45,8 @@ void ASTU_Character::BeginPlay()
 	HealthComponent->OnHealthChanged.AddUObject(this, &ASTU_Character::OnHelthChanged);
 
 	LandedDelegate.AddDynamic(this, &ASTU_Character::OnGroundLanded);
+
+	SpawnWeapon();
 }
 
 void ASTU_Character::OnHelthChanged(float Health)
@@ -115,7 +118,7 @@ void ASTU_Character::OnDeath()
 
 	GetCharacterMovement()->DisableMovement();
 
-	SetLifeSpan(5.0f); //Destroy Actor in 5 sec
+	SetLifeSpan(LifeSpanOnDeath); //Destroy Actor in 5 sec
 }
 
 void ASTU_Character::OnGroundLanded(const FHitResult& Hit)
@@ -127,4 +130,17 @@ void ASTU_Character::OnGroundLanded(const FHitResult& Hit)
 	const auto FinalDamage = FMath::GetMappedRangeValueClamped(LandedDamageVelocity, LandedDamage, FallVelocityZ);
 
 	TakeDamage(FinalDamage, FDamageEvent{}, nullptr, nullptr);
+}
+
+void ASTU_Character::SpawnWeapon()
+{
+	if (!GetWorld())return;
+
+	const auto Weapon = GetWorld()->SpawnActor<ASTU_Base_Weapon>(WeaponClass);
+
+	if (Weapon)
+	{
+		FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, false);
+		Weapon->AttachToComponent(GetMesh(), AttachmentRules, "WeaponSocket");
+	}
 }

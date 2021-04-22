@@ -10,6 +10,7 @@ class UCameraComponent;
 class USpringArmComponent;
 class USTU_HealthComponent;
 class UTextRenderComponent;
+class ASTU_Base_Weapon;
 
 UCLASS()
 class SHOOTTHEMUP_API ASTU_Character : public ACharacter
@@ -36,11 +37,18 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Animation")
 		UAnimMontage* DeathAnimMontage;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Movement")
+	UPROPERTY(EditDefaultsOnly, Category = "Damage")
+		float LifeSpanOnDeath = 5.0f;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Damage")
 		FVector2D LandedDamageVelocity = FVector2D(800.0f, 1200.0f);
 
-	UPROPERTY(EditDefaultsOnly, Category = "Movement")
+	UPROPERTY(EditDefaultsOnly, Category = "Damage")
 		FVector2D LandedDamage = FVector2D(5.0f, 100.0f);
+
+	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
+		TSubclassOf<ASTU_Base_Weapon> WeaponClass;
+
 
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -73,4 +81,6 @@ private:
 
 	UFUNCTION()
 		void OnGroundLanded(const FHitResult& Hit);
+
+	void SpawnWeapon();
 };
