@@ -9,6 +9,7 @@
 #include "Components/STU_HealthComponent.h"
 #include "Components/TextRenderComponent.h"
 #include "Components/STU_Weapon_Component.h"
+#include "Components/CapsuleComponent.h"
 #include "GameFramework/Controller.h"
 
 // Sets default values
@@ -125,6 +126,8 @@ void ASTU_Character::OnDeath()
 	GetCharacterMovement()->DisableMovement();
 
 	SetLifeSpan(LifeSpanOnDeath); //Destroy Actor in 5 sec
+
+	GetCapsuleComponent()->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
 }
 
 void ASTU_Character::OnGroundLanded(const FHitResult& Hit)
