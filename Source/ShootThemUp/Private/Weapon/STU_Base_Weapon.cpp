@@ -40,7 +40,7 @@ void ASTU_Base_Weapon::MakeShot()
 	if (!GetWorld()) return;
 
 	FVector TraceStart, TraceEnd;
-	if(GetTraceData(TraceStart, TraceEnd)) return;
+	if(!GetTraceData(TraceStart, TraceEnd)) return;
 
 	FHitResult HitResult;
 	MakeHit(HitResult, TraceStart, TraceEnd);
