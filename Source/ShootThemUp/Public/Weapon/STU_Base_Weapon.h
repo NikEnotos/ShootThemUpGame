@@ -17,7 +17,8 @@ public:
 
 	ASTU_Base_Weapon();
 
-	virtual void Fire();
+	virtual void StartFire();
+	virtual void StopFire();
 
 protected:
 
@@ -32,6 +33,13 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 		float DamageAmount = 10.0f;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+		float TimerBetweenShots = 0.1f;
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+		float BulletSpread = 1.5f;
+
 
 	virtual void BeginPlay() override;
 
@@ -48,4 +56,8 @@ protected:
 	void MakeHit(FHitResult& HitResult, const FVector& TraceStart, const FVector& TraceEnd);
 
 	void MakeDamage(const FHitResult& HitResult);
+
+private:
+	FTimerHandle ShotTimerHandle;
+
 };
