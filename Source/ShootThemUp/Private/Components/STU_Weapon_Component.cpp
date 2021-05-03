@@ -17,24 +17,67 @@ void USTU_Weapon_Component::BeginPlay()
 {
 	Super::BeginPlay();
 
-	SpawnWeapon();
+	CurrentWeaponIndex = 0;
+
+	SpawnWeapons();
+	
+	EquipWeapon(CurrentWeaponIndex);
+}
+
+void USTU_Weapon_Component::EndPlay(const EEndPlayReason::Type EndPlayReason) 
+{
+	CurrentWeapon = nullptr;
+	for (auto Weapon : Weapons)
+	{
+		Weapon->DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);  
+		Weapon->Destroy();
+	}
+	Weapons.Empty();
+	Super::EndPlay(EndPlayReason);
+}
+
+void USTU_Weapon_Component::SpawnWeapons()
+{
+	ACharacter* Character = Cast<ACharacter>(GetOwner());
+	if (!Character || !GetWorld()) return;
+
+	for (auto WeaponClass : WeaponClasses)
+	{
+		auto Weapon = GetWorld()->SpawnActor<ASTU_Base_Weapon>(WeaponClass);
+		if (!Weapon) continue;
+
+		Weapon->SetOwner(Character);
+		Weapons.Add(Weapon);
+
+		AttachWeaponToSocket(Weapon, Character->GetMesh(), WeaponArmorySocketName);
+	}
+
 	
 }
 
-void USTU_Weapon_Component::SpawnWeapon()
+void USTU_Weapon_Component::AttachWeaponToSocket(ASTU_Base_Weapon* Weapon, USceneComponent* SceneComponent, const FName& SocketName)
 {
-	if (!GetWorld())return;
-
-	ACharacter* Character = Cast<ACharacter>(GetOwner());
-	if (!Character) return;
-
-	CurrentWeapon = GetWorld()->SpawnActor<ASTU_Base_Weapon>(WeaponClass);
-	if (!CurrentWeapon) return;
+	if (!Weapon || !SceneComponent) return;
 
 	FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, false);
-	CurrentWeapon->AttachToComponent(Character->GetMesh(), AttachmentRules, WeaponAttachPointName);
-	CurrentWeapon->SetOwner(Character);
-	
+	Weapon->AttachToComponent(SceneComponent, AttachmentRules, SocketName);
+}
+
+void USTU_Weapon_Component::EquipWeapon(int32 WeaponIndex)
+{
+	ACharacter* Character = Cast<ACharacter>(GetOwner());
+
+	if (!Character) return;
+
+	if (CurrentWeapon)
+	{
+		CurrentWeapon->StopFire();
+		AttachWeaponToSocket(CurrentWeapon, Character->GetMesh(), WeaponArmorySocketName);
+	}
+
+	CurrentWeapon = Weapons[WeaponIndex];
+
+	AttachWeaponToSocket(CurrentWeapon, Character->GetMesh(), WeaponEquipSocketName);
 }
 
 void USTU_Weapon_Component::StartFire()
@@ -53,4 +96,11 @@ void USTU_Weapon_Component::StopFire()
 
 	CurrentWeapon->StopFire();
 
+}
+
+void USTU_Weapon_Component::NextWeapon()
+{
+	CurrentWeaponIndex = (CurrentWeaponIndex + 1) % Weapons.Num();    // 57 leason time: 10:12
+
+	EquipWeapon(CurrentWeaponIndex);
 }
