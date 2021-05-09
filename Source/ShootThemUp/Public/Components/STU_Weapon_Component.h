@@ -32,7 +32,10 @@ protected:
 
 
 	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
-		FName WeaponArmorySocketName = "ArmorySocket";
+	FName WeaponArmorySocketName = "ArmorySocket";
+
+	UPROPERTY(EditDefaultsOnly, Category = "Animations")
+	UAnimMontage* EquipAnimMontage;
 
 	virtual void BeginPlay() override;
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
@@ -52,4 +55,10 @@ private:
 	void AttachWeaponToSocket(ASTU_Base_Weapon* Weapon, USceneComponent* SceneComponent, const FName& SocketName);
 
 	void EquipWeapon(int32 WeaponIndex);
+
+	void PlayAnimMontage(UAnimMontage* Animation);
+
+	void InitAnimations();
+
+	void OnEquipFinished(USkeletalMeshComponent* MeshComponent);
 };
