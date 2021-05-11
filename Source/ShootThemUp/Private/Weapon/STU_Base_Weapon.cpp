@@ -7,7 +7,7 @@
 #include "GameFramework/Character.h"
 #include "GameFramework/Controller.h"
 
-//DEFINE_LOG_CATEGORY_STATIC(LogBaseWeapon, All, All);
+DEFINE_LOG_CATEGORY_STATIC(LogBaseWeapon, All, All);
 
 ASTU_Base_Weapon::ASTU_Base_Weapon()
 {
@@ -24,6 +24,8 @@ void ASTU_Base_Weapon::BeginPlay()
 	Super::BeginPlay();
 	
 	check(WeaponMesh);
+
+	CurrentAmmo = DefaultAmmo;
 }
 
 void ASTU_Base_Weapon::StartFire()
@@ -86,4 +88,45 @@ void ASTU_Base_Weapon::MakeHit(FHitResult& HitResult, const FVector& TraceStart,
 
 	GetWorld()->LineTraceSingleByChannel(HitResult, TraceStart, TraceEnd, ECollisionChannel::ECC_Visibility, CollisionParams);
 
+}
+
+void ASTU_Base_Weapon::DecreaseAmmo()
+{
+	CurrentAmmo.Bullets--;
+	LogAmmo();
+
+	if (IsClipEmpty() && !IsAmmoEmpty())
+	{
+		ChangeClip();
+	}
+
+}
+
+bool ASTU_Base_Weapon::IsAmmoEmpty() const
+{
+	return !CurrentAmmo.Infinet && CurrentAmmo.Clips == 0 && IsClipEmpty();
+}
+
+bool ASTU_Base_Weapon::IsClipEmpty() const
+{
+	return CurrentAmmo.Bullets == 0;
+}
+
+void ASTU_Base_Weapon::ChangeClip()
+{
+	CurrentAmmo.Bullets = DefaultAmmo.Bullets;
+
+	if (!CurrentAmmo.Infinet)
+	{
+		CurrentAmmo.Clips--;
+	}
+
+	UE_LOG(LogBaseWeapon, Display, TEXT("--------CHANGE CLIP--------"));
+}
+
+void ASTU_Base_Weapon::LogAmmo()
+{
+	FString AmmoInfo = "Ammo: " + FString::FromInt(CurrentAmmo.Bullets) + " / ";
+	AmmoInfo += CurrentAmmo.Infinet ? "Infinet" : FString::FromInt(CurrentAmmo.Clips);
+	UE_LOG(LogBaseWeapon, Display, TEXT("%s"), *AmmoInfo);
 }

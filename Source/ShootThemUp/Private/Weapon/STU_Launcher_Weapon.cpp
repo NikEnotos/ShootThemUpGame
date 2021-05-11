@@ -11,10 +11,17 @@ void ASTU_Launcher_Weapon::StartFire()
 
 void ASTU_Launcher_Weapon::MakeShot()
 {	
-	if (!GetWorld()) return;
-
+	if (!GetWorld() || IsAmmoEmpty())
+	{
+		StopFire();
+		return;
+	}
 	FVector TraceStart, TraceEnd;
-	if (!GetTraceData(TraceStart, TraceEnd)) return;
+	if (!GetTraceData(TraceStart, TraceEnd)) 
+	{
+		StopFire();
+		return;
+	}
 
 	FHitResult HitResult;
 	MakeHit(HitResult, TraceStart, TraceEnd);
@@ -32,5 +39,7 @@ void ASTU_Launcher_Weapon::MakeShot()
 		Projectile->SetOwner(GetOwner());
 		Projectile->FinishSpawning(SpawnTransform); 
 	}
+
+	DecreaseAmmo();
 }
 
