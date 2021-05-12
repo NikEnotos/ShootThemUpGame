@@ -44,9 +44,9 @@ void USTU_Weapon_Component::SpawnWeapons()
 	ACharacter* Character = Cast<ACharacter>(GetOwner());
 	if (!Character || !GetWorld()) return;
 
-	for (auto WeaponClass : WeaponClasses)
+	for (auto OneWeaponData : WeaponData)
 	{
-		auto Weapon = GetWorld()->SpawnActor<ASTU_Base_Weapon>(WeaponClass);
+		auto Weapon = GetWorld()->SpawnActor<ASTU_Base_Weapon>(OneWeaponData.WeaponClass);
 		if (!Weapon) continue;
 
 		Weapon->SetOwner(Character);
@@ -68,6 +68,12 @@ void USTU_Weapon_Component::AttachWeaponToSocket(ASTU_Base_Weapon* Weapon, UScen
 
 void USTU_Weapon_Component::EquipWeapon(int32 WeaponIndex)
 {
+	if (WeaponIndex<0 || WeaponIndex>Weapons.Num())
+	{
+		UE_LOG(LogWeaponComponent, Warning, TEXT("Invalid Weapon Index!"));
+		return;
+	}
+
 	ACharacter* Character = Cast<ACharacter>(GetOwner());
 
 	if (!Character) return;
@@ -79,6 +85,13 @@ void USTU_Weapon_Component::EquipWeapon(int32 WeaponIndex)
 	}
 
 	CurrentWeapon = Weapons[WeaponIndex];
+
+	//CurrentReloadAnimMontage = WeaponData[WeaponIndex].ReloadAnimMontage; // Not correct way
+	const auto CurrentWeaponData = WeaponData.FindByPredicate([&](const FWeaponData& Data) {		//
+		return Data.WeaponClass == CurrentWeapon->GetClass();										//
+	});
+
+	CurrentReloadAnimMontage = CurrentWeaponData ? CurrentWeaponData->ReloadAnimMontage : nullptr;
 
 	AttachWeaponToSocket(CurrentWeapon, Character->GetMesh(), WeaponEquipSocketName);
 
@@ -158,4 +171,9 @@ bool USTU_Weapon_Component::CanFire() const
 bool USTU_Weapon_Component::CanEquip() const
 {
 	return !EquipAnimInProgres;
+}
+
+void USTU_Weapon_Component::Reload()
+{
+	PlayAnimMontage(CurrentReloadAnimMontage);
 }
