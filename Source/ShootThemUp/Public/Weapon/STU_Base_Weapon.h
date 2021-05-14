@@ -6,6 +6,8 @@
 #include "GameFramework/Actor.h"
 #include "STU_Base_Weapon.generated.h"
 
+DECLARE_MULTICAST_DELEGATE(FOnClipEmptySignature);
+
 class USkeletalMeshComponent;
 
 USTRUCT(BlueprintType)
@@ -34,8 +36,13 @@ public:
 
 	ASTU_Base_Weapon();
 
+	FOnClipEmptySignature OnClipEmpty;
+
 	virtual void StartFire();
 	virtual void StopFire();
+
+	void ChangeClip();
+	bool CanReload() const;
 
 protected:
 
@@ -70,8 +77,6 @@ protected:
 	bool IsAmmoEmpty() const;
 
 	bool IsClipEmpty() const;
-
-	void ChangeClip();
 
 	void LogAmmo();
 

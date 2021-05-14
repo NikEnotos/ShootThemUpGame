@@ -10,11 +10,9 @@
 void ASTU_Rifle_Weapon::StartFire()
 {
 	//UE_LOG(LogBaseWeapon, Display, TEXT("FIRE"));
-
-	MakeShot();
-
 	GetWorldTimerManager().SetTimer(ShotTimerHandle, this, &ASTU_Rifle_Weapon::MakeShot, TimerBetweenShots, true);
 
+	MakeShot();
 }
 
 void ASTU_Rifle_Weapon::StopFire()
