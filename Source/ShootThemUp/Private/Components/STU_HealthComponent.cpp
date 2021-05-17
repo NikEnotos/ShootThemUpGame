@@ -18,6 +18,8 @@ USTU_HealthComponent::USTU_HealthComponent()
 void USTU_HealthComponent::BeginPlay()
 {
 	Super::BeginPlay();
+	
+	check(MaxHealth > 0);
 
 	SetHealth(MaxHealth);
 

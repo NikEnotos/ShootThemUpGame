@@ -26,6 +26,8 @@ public:
 	void ChangeClip();
 	bool CanReload() const;
 
+	FweaponUIData GetUIData() const { return UIData; }
+
 protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
@@ -39,6 +41,9 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Weapon")
 		FAmmoData DefaultAmmo {15, 10, false};
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "UI")
+		FweaponUIData UIData;
 
 	virtual void BeginPlay() override;
 

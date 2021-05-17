@@ -16,13 +16,16 @@ public:
 	// Sets default values for this component's properties
 	USTU_HealthComponent();
 
-	float GetHealth() const { return Health; }
-
-	UFUNCTION(BlueprintCallable)
-		bool IsDead() const { return FMath::IsNearlyZero(Health); }
-
 	FOnDeath OnDeath;
 	FOnHealthChanged OnHealthChanged;
+
+	float GetHealth() const { return Health; }
+
+	UFUNCTION(BlueprintCallable, Category = "Health")
+		bool IsDead() const { return FMath::IsNearlyZero(Health); }
+
+	UFUNCTION(BlueprintCallable, Category = "Health")
+		float GetHealthPercent()const { return Health / MaxHealth; }
 
 protected:
 	// Called when the game starts

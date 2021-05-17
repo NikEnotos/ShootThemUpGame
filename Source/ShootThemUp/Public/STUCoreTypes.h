@@ -37,6 +37,19 @@ struct FWeaponData
 		UAnimMontage* ReloadAnimMontage;
 };
 
+USTRUCT(BlueprintType)
+struct FweaponUIData
+{
+
+	GENERATED_USTRUCT_BODY()
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "UI")
+		UTexture2D* MainIcon;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "UI")
+		UTexture2D* CrossHairIcon;
+};
+
 //HEALTH
 
 DECLARE_MULTICAST_DELEGATE(FOnDeath);

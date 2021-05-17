@@ -23,6 +23,8 @@ public:
 	void NextWeapon();
 	void Reload();
 
+	bool GetWeaponUIData(FweaponUIData& UIData) const;
+
 protected:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
