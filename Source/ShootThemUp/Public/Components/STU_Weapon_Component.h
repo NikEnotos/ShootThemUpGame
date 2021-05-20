@@ -23,7 +23,8 @@ public:
 	void NextWeapon();
 	void Reload();
 
-	bool GetWeaponUIData(FweaponUIData& UIData) const;
+	bool GetCurrentWeaponUIData(FWeaponUIData& UIData) const;
+	bool GetCurrentWeaponAmmoData(FAmmoData& AmmoData) const;
 
 protected:
 

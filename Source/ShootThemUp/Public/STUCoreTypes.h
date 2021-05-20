@@ -38,7 +38,7 @@ struct FWeaponData
 };
 
 USTRUCT(BlueprintType)
-struct FweaponUIData
+struct FWeaponUIData
 {
 
 	GENERATED_USTRUCT_BODY()

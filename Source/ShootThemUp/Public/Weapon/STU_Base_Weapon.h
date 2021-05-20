@@ -13,8 +13,8 @@ UCLASS()
 class SHOOTTHEMUP_API ASTU_Base_Weapon : public AActor
 {
 	GENERATED_BODY()
-	
-public:	
+
+public:
 
 	ASTU_Base_Weapon();
 
@@ -26,7 +26,8 @@ public:
 	void ChangeClip();
 	bool CanReload() const;
 
-	FweaponUIData GetUIData() const { return UIData; }
+	FWeaponUIData GetUIData() const { return UIData; }
+	FAmmoData GetAmmoData() const { return CurrentAmmo; }
 
 protected:
 
@@ -43,7 +44,7 @@ protected:
 		FAmmoData DefaultAmmo {15, 10, false};
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "UI")
-		FweaponUIData UIData;
+		FWeaponUIData UIData;
 
 	virtual void BeginPlay() override;
 
