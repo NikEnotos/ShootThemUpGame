@@ -132,6 +132,11 @@ void ASTU_Character::OnDeath()
 
 	SetLifeSpan(LifeSpanOnDeath); //Destroy Actor in 5 sec
 
+	if (Controller)
+	{
+		Controller->ChangeState(NAME_Spectating);
+	}
+
 	GetCapsuleComponent()->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
 }
 
