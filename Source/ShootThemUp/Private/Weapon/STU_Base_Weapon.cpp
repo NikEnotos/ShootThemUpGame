@@ -106,7 +106,7 @@ void ASTU_Base_Weapon::DecreaseAmmo()
 	if (IsClipEmpty() && !IsAmmoEmpty())
 	{
 		StopFire();
-		OnClipEmpty.Broadcast();
+		OnClipEmpty.Broadcast(this);
 	}
 
 }
@@ -148,4 +148,42 @@ void ASTU_Base_Weapon::LogAmmo()
 	FString AmmoInfo = "Ammo: " + FString::FromInt(CurrentAmmo.Bullets) + " / ";
 	AmmoInfo += CurrentAmmo.Infinet ? "Infinet" : FString::FromInt(CurrentAmmo.Clips);
 	UE_LOG(LogBaseWeapon, Display, TEXT("%s"), *AmmoInfo);
+}
+
+bool ASTU_Base_Weapon::ISAmmoFull() const
+{
+	return CurrentAmmo.Clips == DefaultAmmo.Clips && CurrentAmmo.Bullets == DefaultAmmo.Bullets;
+}
+
+bool ASTU_Base_Weapon::TryToAddAmmo(int32 ClipsAmount)
+{
+	if (CurrentAmmo.Infinet || ISAmmoFull() || ClipsAmount <= 0) return false;
+
+	if (IsAmmoEmpty())
+	{
+		UE_LOG(LogBaseWeapon, Display, TEXT("Ammo was empty!"));
+		CurrentAmmo.Clips = FMath::Clamp(CurrentAmmo.Clips + ClipsAmount, 0, DefaultAmmo.Clips + 1);
+		OnClipEmpty.Broadcast(this);
+	}
+	else if (CurrentAmmo.Clips < DefaultAmmo.Clips)
+	{
+		const auto NextClipAmount = CurrentAmmo.Clips + ClipsAmount;
+		if (DefaultAmmo.Clips - NextClipAmount >= 0)
+		{
+			CurrentAmmo.Clips = NextClipAmount;
+			UE_LOG(LogBaseWeapon, Display, TEXT("Clips were added!"));
+		}
+		else
+		{
+			CurrentAmmo.Clips = DefaultAmmo.Clips;
+			CurrentAmmo.Bullets = DefaultAmmo.Bullets;
+			UE_LOG(LogBaseWeapon, Display, TEXT("Ammo is full now!"));
+		}
+	}
+	else
+	{
+		CurrentAmmo.Bullets = DefaultAmmo.Bullets;
+		UE_LOG(LogBaseWeapon, Display, TEXT("Bullets were empty!"));
+	}
+	return true;
 }
