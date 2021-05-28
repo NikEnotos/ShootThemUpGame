@@ -4,8 +4,21 @@
 #include "Weapon/STU_Rifle_Weapon.h"
 #include "Engine/World.h"
 #include "DrawDebugHelpers.h"
+#include "Weapon/Component/STUWeaponFXComponent.h"
 
 //DEFINE_LOG_CATEGORY_STATIC(LogBaseWeapon, All, All);
+
+ASTU_Rifle_Weapon::ASTU_Rifle_Weapon()
+{
+	WeaponFXComponent = CreateDefaultSubobject<USTUWeaponFXComponent>("WeaponFXComponent");
+}
+
+void ASTU_Rifle_Weapon::BeginPlay()
+{
+	Super::BeginPlay();
+
+	check(WeaponFXComponent);
+}
 
 void ASTU_Rifle_Weapon::StartFire()
 {
@@ -35,8 +48,10 @@ void ASTU_Rifle_Weapon::MakeShot()
 	{
 		MakeDamage(HitResult);
 
-		DrawDebugLine(GetWorld(), GetMuzzleWorldLocation(), HitResult.ImpactPoint, FColor::Blue, false, 3.0f, 0, 3.0f);
-		DrawDebugSphere(GetWorld(), HitResult.ImpactPoint, 7.0f, 24, FColor::Red, false, 5.0f);
+		//DrawDebugLine(GetWorld(), GetMuzzleWorldLocation(), HitResult.ImpactPoint, FColor::Blue, false, 3.0f, 0, 3.0f);
+		//DrawDebugSphere(GetWorld(), HitResult.ImpactPoint, 7.0f, 24, FColor::Red, false, 5.0f);
+
+		WeaponFXComponent->PlayImpactFX(HitResult);
 
 		//UE_LOG(LogBaseWeapon, Display, TEXT("Hit Bone: %s"), *HitResult.BoneName.ToString());
 	}
