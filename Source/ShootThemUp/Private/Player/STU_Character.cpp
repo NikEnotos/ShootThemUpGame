@@ -43,6 +43,7 @@ void ASTU_Character::BeginPlay()
 	check(HealthComponent);
 	check(HealthTextComponent);
 	check(GetCharacterMovement());
+	check(GetMesh());
 
 	OnHelthChanged(HealthComponent->GetHealth());
 	HealthComponent->OnDeath.AddUObject(this, &ASTU_Character::OnDeath);
@@ -124,9 +125,7 @@ float  ASTU_Character::GetMovementDirection() const
 
 void ASTU_Character::OnDeath()
 {
-	WeaponComponent->StopFire();
-
-	PlayAnimMontage(DeathAnimMontage);
+	//PlayAnimMontage(DeathAnimMontage);
 
 	GetCharacterMovement()->DisableMovement();
 
@@ -136,8 +135,12 @@ void ASTU_Character::OnDeath()
 	{
 		Controller->ChangeState(NAME_Spectating);
 	}
-
 	GetCapsuleComponent()->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
+
+	WeaponComponent->StopFire();
+
+	GetMesh()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+	GetMesh()->SetSimulatePhysics(true);
 }
 
 void ASTU_Character::OnGroundLanded(const FHitResult& Hit)
