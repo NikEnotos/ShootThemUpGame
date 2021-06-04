@@ -54,6 +54,7 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "VFX")
 		TSubclassOf<UCameraShakeBase> CameraShake;
 
+
 	virtual void BeginPlay() override;
 
 
