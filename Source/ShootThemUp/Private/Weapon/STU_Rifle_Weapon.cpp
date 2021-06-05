@@ -5,6 +5,7 @@
 #include "Engine/World.h"
 #include "DrawDebugHelpers.h"
 #include "Weapon/Component/STUWeaponFXComponent.h"
+#include "NiagaraComponent.h"
 
 //DEFINE_LOG_CATEGORY_STATIC(LogBaseWeapon, All, All);
 
@@ -22,6 +23,8 @@ void ASTU_Rifle_Weapon::BeginPlay()
 
 void ASTU_Rifle_Weapon::StartFire()
 {
+	InitMuzzleFX();
+
 	//UE_LOG(LogBaseWeapon, Display, TEXT("FIRE"));
 	GetWorldTimerManager().SetTimer(ShotTimerHandle, this, &ASTU_Rifle_Weapon::MakeShot, TimerBetweenShots, true);
 
@@ -31,6 +34,8 @@ void ASTU_Rifle_Weapon::StartFire()
 void ASTU_Rifle_Weapon::StopFire()
 {
 	GetWorldTimerManager().ClearTimer(ShotTimerHandle);
+
+	SetMuzzleFXVisible(false);
 }
 
 void ASTU_Rifle_Weapon::MakeShot()
@@ -83,4 +88,25 @@ void ASTU_Rifle_Weapon::MakeDamage(const FHitResult& HitResult)
 	if (!DamagedActor) return;
 
 	DamagedActor->TakeDamage(DamageAmount, FDamageEvent(), GetPlayerController(), this);
+}
+
+void ASTU_Rifle_Weapon::InitMuzzleFX()
+{
+	if (!MuzzleFXComponent)
+	{
+		MuzzleFXComponent = SpawnMuzzleFX();
+	}
+
+	SetMuzzleFXVisible(true);
+
+}
+
+void ASTU_Rifle_Weapon::SetMuzzleFXVisible(bool Visible)
+{
+	if (MuzzleFXComponent)
+	{
+		//MuzzleFXComponent->SetPaused(!Visible);
+
+		MuzzleFXComponent->SetVisibility(Visible, true);
+	}
 }

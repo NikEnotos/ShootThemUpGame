@@ -7,6 +7,7 @@
 #include "STU_Rifle_Weapon.generated.h"
 
 class USTUWeaponFXComponent;
+class UNiagaraComponent;
 
 UCLASS()
 class SHOOTTHEMUP_API ASTU_Rifle_Weapon : public ASTU_Base_Weapon
@@ -44,5 +45,11 @@ protected:
 private:
 	FTimerHandle ShotTimerHandle;
 
+	UPROPERTY()
+		UNiagaraComponent* MuzzleFXComponent;
+
 	void MakeDamage(const FHitResult& HitResult);
+
+	void InitMuzzleFX();
+	void SetMuzzleFXVisible(bool Visible);
 };

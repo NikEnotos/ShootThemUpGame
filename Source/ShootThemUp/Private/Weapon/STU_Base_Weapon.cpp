@@ -6,6 +6,8 @@
 #include "DrawDebugHelpers.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/Controller.h"
+#include "NiagaraFunctionLibrary.h"
+#include "NiagaraComponent.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogBaseWeapon, All, All);
 
@@ -187,4 +189,16 @@ bool ASTU_Base_Weapon::TryToAddAmmo(int32 ClipsAmount)
 		UE_LOG(LogBaseWeapon, Display, TEXT("Bullets were empty!"));
 	}
 	return true;
+}
+
+UNiagaraComponent* ASTU_Base_Weapon::SpawnMuzzleFX()
+{
+	return UNiagaraFunctionLibrary::SpawnSystemAttached(	//
+		MuzzleFX,											//
+		WeaponMesh,											//
+		MuzzleSocketName,									//
+		FVector::ZeroVector,								//
+		FRotator::ZeroRotator,								//
+		EAttachLocation::SnapToTarget,						//
+		true);
 }
