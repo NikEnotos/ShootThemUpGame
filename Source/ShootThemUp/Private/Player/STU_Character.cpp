@@ -101,11 +101,13 @@ void ASTU_Character::MoveRight(float Amount)
 
 void ASTU_Character::OnStartRunning()
 {
+	WeaponComponent->CharIsRuning = true;
 	WantsToRun = true;
 }
 
 void ASTU_Character::OnStopRunning()
 {
+	WeaponComponent->CharIsRuning = false;
 	WantsToRun = false;
 }
 

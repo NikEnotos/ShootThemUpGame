@@ -81,7 +81,7 @@ bool ASTU_Rifle_Weapon::GetTraceData(FVector& TraceStart, FVector& TraceEnd) con
 	TraceStart = ViewLocation;																							//SocketTransform.GetLocation();
 	const auto HalfRad = FMath::DegreesToRadians(BulletSpread);	//Convert value from degrees in our property to Radians
 	const FVector ShootDirection = FMath::VRandCone(ViewRotation.Vector(), HalfRad);									//SocketTransform.GetRotation().GetForwardVector();
-	TraceEnd = TraceStart + ShootDirection * TraceMaxDistance;
+	TraceEnd = TraceStart + ShootDirection * ShotDistance;
 	return true;																										//DrawDebugLine(GetWorld(), TraceStart, TraceEnd, FColor::Blue, false, 3.0f, 0, 3.0f);
 }
 

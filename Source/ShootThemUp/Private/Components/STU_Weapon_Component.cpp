@@ -190,7 +190,7 @@ void USTU_Weapon_Component::OnReloadFinished(USkeletalMeshComponent* MeshCompone
 
 bool USTU_Weapon_Component::CanFire() const
 {
-	return CurrentWeapon && !EquipAnimInProgres && !ReloadAnimInProgres;
+	return CurrentWeapon && !EquipAnimInProgres && !ReloadAnimInProgres && !CharIsRuning;
 }
 
 bool USTU_Weapon_Component::CanEquip() const

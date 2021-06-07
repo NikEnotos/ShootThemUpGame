@@ -28,6 +28,8 @@ public:
 
 	bool TryToAddAmmo(TSubclassOf<ASTU_Base_Weapon> WeaponType, int32 ClipsAmount);
 
+	bool CharIsRuning = false;
+
 protected:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
