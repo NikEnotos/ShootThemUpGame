@@ -127,6 +127,8 @@ float  ASTU_Character::GetMovementDirection() const
 
 void ASTU_Character::OnDeath()
 {
+	WeaponComponent->StopFire();
+
 	//PlayAnimMontage(DeathAnimMontage);
 
 	GetCharacterMovement()->DisableMovement();
@@ -138,8 +140,6 @@ void ASTU_Character::OnDeath()
 		Controller->ChangeState(NAME_Spectating);
 	}
 	GetCapsuleComponent()->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
-
-	WeaponComponent->StopFire();
 
 	GetMesh()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 	GetMesh()->SetSimulatePhysics(true);
