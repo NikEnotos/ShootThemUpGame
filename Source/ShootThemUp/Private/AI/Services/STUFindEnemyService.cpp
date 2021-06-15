@@ -3,7 +3,7 @@
 
 #include "AI/Services/STUFindEnemyService.h"
 #include "BehaviorTree/BlackboardComponent.h"
-#include"AIController.h"
+#include "AIController.h"
 #include "STUUtils.h"
 #include "Components/STUAIPerceptionComponent.h"
 

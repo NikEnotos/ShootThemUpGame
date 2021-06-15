@@ -7,6 +7,8 @@
 #include "Animation/STU_EquipFinishedAnimNotify.h"
 #include "Animation/STU_ReloadAnimNotify.h"
 #include "Animation/AnimUtils.h"
+#include "Components/STU_HealthComponent.h"
+#include "STUUtils.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogWeaponComponent, All, All);
 
@@ -195,7 +197,10 @@ bool USTU_Weapon_Component::CanFire() const
 
 bool USTU_Weapon_Component::CanEquip() const
 {
-	return !EquipAnimInProgres && !ReloadAnimInProgres;
+	const auto Pawn = GetOwner();
+	const auto HealthComponent = STUUtils::GetSTUPlayerComponent<USTU_HealthComponent>(Pawn);
+
+	return !EquipAnimInProgres && !ReloadAnimInProgres && !HealthComponent->IsDead();
 }
 
 bool USTU_Weapon_Component::CanReload() const

@@ -108,7 +108,7 @@ void ASTU_Rifle_Weapon::SetMuzzleFXVisible(bool Visible)
 {
 	if (MuzzleFXComponent)
 	{
-		//MuzzleFXComponent->SetPaused(!Visible);
+		MuzzleFXComponent->SetPaused(!Visible);
 
 		MuzzleFXComponent->SetVisibility(Visible, true);
 	}

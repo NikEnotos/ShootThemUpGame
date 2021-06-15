@@ -4,8 +4,10 @@
 #include "AI/STU_AICharacter.h"
 #include "AI/STU_AIController.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Components/STU_AIWeapon_Component.h"
 
-ASTU_AICharacter::ASTU_AICharacter(const FObjectInitializer& ObjInit):Super(ObjInit)
+ASTU_AICharacter::ASTU_AICharacter(const FObjectInitializer& ObjInit)
+	: Super(ObjInit.SetDefaultSubobjectClass<USTU_AIWeapon_Component>("WeaponComponent"))
 {
 	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
 
