@@ -8,6 +8,8 @@
 #include "Engine/World.h"
 #include "TimerManager.h"
 #include "Camera/CameraShake.h"
+#include "NiagaraComponent.h"
+#include "NiagaraFunctionLibrary.h"
 
 USTU_HealthComponent::USTU_HealthComponent()
 {
@@ -53,6 +55,8 @@ void USTU_HealthComponent::OnTakeAnyDamage(
 	{
 		GetWorld()->GetTimerManager().SetTimer(HealUpdateTimer, this, &USTU_HealthComponent::HealUpdate, HealUpdateTime, true, HealDelay);
 	}
+
+	UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), BloodEffect, GetOwner()->GetActorLocation());
 
 	PlayCameraShake();
 }

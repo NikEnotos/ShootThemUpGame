@@ -54,6 +54,8 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "VFX")
 		TSubclassOf<UCameraShakeBase> CameraShake;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "VFX")
+		UNiagaraSystem* BloodEffect;
 
 	virtual void BeginPlay() override;
 
