@@ -49,9 +49,9 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Damage")
 		FVector2D LandedDamage = FVector2D(5.0f, 100.0f);
 
-
-	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+
+	virtual void OnDeath();
 
 public:	
 	// Called every frame
@@ -76,7 +76,6 @@ private:
 	void OnStartRunning();
 	void OnStopRunning();
 
-	void OnDeath();
 	void OnHelthChanged(float Health, float HealthDelta);
 
 	UFUNCTION()
