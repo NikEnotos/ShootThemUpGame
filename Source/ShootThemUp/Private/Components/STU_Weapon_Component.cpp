@@ -271,3 +271,15 @@ bool USTU_Weapon_Component::TryToAddAmmo(TSubclassOf<ASTU_Base_Weapon> WeaponTyp
 	}
 	return false;
 }
+
+bool USTU_Weapon_Component::NeedAmmo(TSubclassOf<ASTU_Base_Weapon> WeaponType)
+{
+	for (const auto Weapon : Weapons)
+	{
+		if (Weapon && Weapon->IsA(WeaponType))
+		{
+			return !Weapon->ISAmmoFull();
+		}
+	}
+	return false;
+}

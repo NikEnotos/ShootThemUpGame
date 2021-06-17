@@ -35,6 +35,8 @@ public:
 
 	bool IsAmmoEmpty() const;
 
+	bool ISAmmoFull() const;
+
 protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
@@ -72,8 +74,6 @@ protected:
 	void DecreaseAmmo();
 
 	bool IsClipEmpty() const;
-
-	bool ISAmmoFull() const;
 
 	void LogAmmo();
 
