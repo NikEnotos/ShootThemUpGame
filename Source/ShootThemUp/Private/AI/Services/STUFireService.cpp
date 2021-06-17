@@ -6,7 +6,6 @@
 #include "AIController.h"
 #include "STUUtils.h"
 #include "Components/STU_Weapon_Component.h"
-#include "STUUtils.h"
 #include "Components/STU_HealthComponent.h"
 
 USTUFireService::USTUFireService()
