@@ -10,7 +10,7 @@
 ASTU_AICharacter::ASTU_AICharacter(const FObjectInitializer& ObjInit)
 	: Super(ObjInit.SetDefaultSubobjectClass<USTU_AIWeapon_Component>("WeaponComponent"))
 {
-	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
+	AutoPossessAI = EAutoPossessAI::Disabled;
 
 	AIControllerClass = ASTU_AIController::StaticClass();
 

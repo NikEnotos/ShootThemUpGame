@@ -46,4 +46,7 @@ private:
 
 	void GameTimerUpdate();
 
+	void ResetPlayers();
+
+	void ResetOnePlayer(AController* Controller);
 };
