@@ -151,7 +151,7 @@ void ASTU_Base_Weapon::ChangeClip()
 	}
 	CurrentAmmo.Bullets = DefaultAmmo.Bullets;
 
-	UE_LOG(LogBaseWeapon, Display, TEXT("--------CHANGE CLIP--------"));
+	//UE_LOG(LogBaseWeapon, Display, TEXT("--------CHANGE CLIP--------"));
 }
 
 bool ASTU_Base_Weapon::CanReload() const
