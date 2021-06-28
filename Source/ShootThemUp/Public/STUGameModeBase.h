@@ -30,6 +30,8 @@ public:
 
 	int32 GetRoundSecondsRemaining() { return RoundCountDown; }
 
+	void RespawnRequest(AController* Controller);
+
 protected:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Game")
@@ -65,4 +67,6 @@ private:
 	void SetPlayerColor(AController* Controller);
 
 	void LogPlayerInfo();
+
+	void StartRespawn(AController* Controller);
 };
