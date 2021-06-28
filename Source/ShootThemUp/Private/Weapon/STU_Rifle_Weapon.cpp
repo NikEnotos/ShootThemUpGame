@@ -90,7 +90,7 @@ void ASTU_Rifle_Weapon::MakeDamage(const FHitResult& HitResult)
 	const auto DamagedActor = HitResult.GetActor();
 	if (!DamagedActor) return;
 
-	DamagedActor->TakeDamage(DamageAmount, FDamageEvent(), GetPlayerController(), this);
+	DamagedActor->TakeDamage(DamageAmount, FDamageEvent(), GetController(), this);
 }
 
 void ASTU_Rifle_Weapon::InitMuzzleFX()
@@ -122,4 +122,11 @@ void ASTU_Rifle_Weapon::SpawnTraceFX(const FVector& TraceStart, const FVector& T
 	{
 		TraceFXComponent->SetNiagaraVariableVec3(TraceTargetName, TraceEnd);
 	}
+}
+
+
+AController* ASTU_Rifle_Weapon::GetController() const
+{
+	const auto Pawn = Cast<APawn>(GetOwner());
+	return Pawn ? Pawn->GetController() : nullptr;
 }

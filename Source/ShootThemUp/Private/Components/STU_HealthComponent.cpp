@@ -10,6 +10,7 @@
 #include "Camera/CameraShake.h"
 #include "NiagaraComponent.h"
 #include "NiagaraFunctionLibrary.h"
+#include "STUGameModeBase.h"
 
 USTU_HealthComponent::USTU_HealthComponent()
 {
@@ -48,6 +49,7 @@ void USTU_HealthComponent::OnTakeAnyDamage(
 
 	if (IsDead())
 	{
+		Killed(InstigatedBy);
 		OnDeath.Broadcast();
 	}
 
@@ -107,6 +109,18 @@ void USTU_HealthComponent::PlayCameraShake()
 	Controller->PlayerCameraManager->StartCameraShake(CameraShake);
 }
 
+void USTU_HealthComponent::Killed(AController* KillerController)
+{
+	if (!GetWorld()) return;
 
+	const auto GameMode = Cast<ASTUGameModeBase>(GetWorld()->GetAuthGameMode());
+	if (!GameMode) return;
+
+	const auto Player = Cast<APawn>(GetOwner());
+
+	const auto VictimController = Player ? Player->Controller : nullptr;
+
+	GameMode->Killed(KillerController, VictimController);
+}
 
 
