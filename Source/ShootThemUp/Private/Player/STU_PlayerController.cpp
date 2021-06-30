@@ -8,3 +8,10 @@ ASTU_PlayerController::ASTU_PlayerController()
 {
 	RespawnComponent = CreateDefaultSubobject<USTURespawnComponent>("RespawnComponent");
 }
+
+void ASTU_PlayerController::OnPossess(APawn* InPawn)
+{
+	Super::OnPossess(InPawn);
+
+	OnNewPawn.Broadcast(InPawn);
+}
