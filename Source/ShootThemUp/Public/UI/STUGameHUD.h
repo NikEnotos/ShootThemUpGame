@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/HUD.h"
+#include "STUCoreTypes.h"
 #include "STUGameHUD.generated.h"
 
 UCLASS()
@@ -21,7 +22,8 @@ protected:
 	virtual void BeginPlay() override;
 
 private:
+
 	void DrawCrossHair();
 
-
+	void OnMatchStateChanged(ESTUMatchState State);
 };
