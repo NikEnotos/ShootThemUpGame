@@ -6,15 +6,16 @@
 #include "Components/STU_Weapon_Component.h"
 #include "STUUtils.h"
 
-bool USTU_PlayerHUDWidget::Initialize()
+void USTU_PlayerHUDWidget::NativeOnInitialized()
 {
+	Super::NativeOnInitialized();
+
 	if (GetOwningPlayer())
 	{
 		GetOwningPlayer()->GetOnNewPawnNotifier().AddUObject(this, &USTU_PlayerHUDWidget::OnNewPawn);
 		OnNewPawn(GetOwningPlayerPawn());
 	}
 
-	return Super::Initialize();
 }
 
 void USTU_PlayerHUDWidget::OnNewPawn(APawn* NewPawn)
