@@ -6,7 +6,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "STUGameInstance.h"
 
-DEFINE_LOG_CATEGORY_STATIC(LogGameInstance, All, All);
+DEFINE_LOG_CATEGORY_STATIC(LogMenuWidget, All, All);
 
 void USTUMenuWidget::NativeOnInitialized()
 {
@@ -27,7 +27,7 @@ void USTUMenuWidget::OnStartGame()
 
 	if (STUGameInstance->GetStartupLevelName().IsNone())
 	{
-		UE_LOG(LogGameInstance, Error, TEXT("Level name is NONE"));
+		UE_LOG(LogMenuWidget, Error, TEXT("Level name is NONE"));
 		return;
 	}
 
