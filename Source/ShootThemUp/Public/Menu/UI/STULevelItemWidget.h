@@ -40,6 +40,9 @@ protected:
 	UPROPERTY(meta = (BindWidget))
 		UImage* FrameImage;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "UI")
+		FLinearColor SelectedColor = FLinearColor::Red;
+
 	virtual void NativeOnInitialized() override;
 
 private:
@@ -49,4 +52,9 @@ private:
 	UFUNCTION()
 		void OnLevelItemClicked();
 
+	UFUNCTION()
+		void OnLevelItemHovered();
+
+	UFUNCTION()
+		void OnLevelItemUnhovered();
 };
