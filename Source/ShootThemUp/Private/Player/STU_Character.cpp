@@ -8,6 +8,8 @@
 #include "Components/STU_Weapon_Component.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/Controller.h"
+#include "Kismet/GameplayStatics.h"
+#include "Sound/SoundCue.h"
 
 ASTU_Character::ASTU_Character(const FObjectInitializer& ObjInit) : Super(ObjInit.SetDefaultSubobjectClass<USTU_CharacterMovementComponent>(ACharacter::CharacterMovementComponentName))
 {
@@ -79,6 +81,8 @@ void ASTU_Character::OnDeath()
 
 	GetMesh()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 	GetMesh()->SetSimulatePhysics(true);
+
+	UGameplayStatics::PlaySoundAtLocation(GetWorld(), DeathSound, GetActorLocation());
 }
 
 void ASTU_Character::OnGroundLanded(const FHitResult& Hit)
