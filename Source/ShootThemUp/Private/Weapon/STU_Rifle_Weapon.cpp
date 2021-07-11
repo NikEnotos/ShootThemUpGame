@@ -40,6 +40,7 @@ void ASTU_Rifle_Weapon::StopFire()
 	GetWorldTimerManager().ClearTimer(ShotTimerHandle);
 
 	SetFXActive(false);
+
 }
 
 void ASTU_Rifle_Weapon::MakeShot()
@@ -72,6 +73,8 @@ void ASTU_Rifle_Weapon::MakeShot()
 	SpawnTraceFX(GetMuzzleWorldLocation(), TraceFXEnd);
 
 	DecreaseAmmo();
+
+	//UGameplayStatics::SpawnSoundAtLocation(GetWorld(), FireSound, GetMuzzleWorldLocation());
 }
 
 bool ASTU_Rifle_Weapon::GetTraceData(FVector& TraceStart, FVector& TraceEnd) const
@@ -105,7 +108,7 @@ void ASTU_Rifle_Weapon::InitFX()
 
 	if (!FireAudioCompoent)
 	{
-		FireAudioCompoent = UGameplayStatics::SpawnSoundAttached(FireSound, WeaponMesh, MuzzleSocketName);
+		FireAudioCompoent = UGameplayStatics::SpawnSoundAttached(FireSound, WeaponMesh, MuzzleSocketName);															 /*, GetMuzzleWorldLocation(), WeaponMesh->GetSocketRotation(MuzzleSocketName), EAttachLocation::SnapToTarget*/
 	}
 
 	SetFXActive(true);

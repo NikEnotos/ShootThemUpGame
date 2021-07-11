@@ -4,6 +4,7 @@
 #include "Player/STU_PlayerController.h"
 #include "Components/STURespawnComponent.h"
 #include "STUGameModeBase.h"
+#include "STUGameInstance.h"
 
 ASTU_PlayerController::ASTU_PlayerController()
 {
@@ -52,6 +53,7 @@ void ASTU_PlayerController::SetupInputComponent()
 	if (!InputComponent) return;
 
 	InputComponent->BindAction("PauseGame", IE_Pressed, this, &ASTU_PlayerController::OnPauseGame);
+	InputComponent->BindAction("Mute", IE_Pressed, this, &ASTU_PlayerController::OnMuteSound);
 }
 
 void ASTU_PlayerController::OnPauseGame()
@@ -61,3 +63,12 @@ void ASTU_PlayerController::OnPauseGame()
 	GetWorld()->GetAuthGameMode()->SetPause(this);
 }
 
+void ASTU_PlayerController::OnMuteSound()
+{
+	if (!GetWorld()) return;
+
+	const auto STUGameInstance = GetWorld()->GetGameInstance<USTUGameInstance>();
+	if (!STUGameInstance) return;
+
+	STUGameInstance->ToggleVolume();
+}
