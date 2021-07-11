@@ -106,9 +106,9 @@ void ASTU_Rifle_Weapon::InitFX()
 		MuzzleFXComponent = SpawnMuzzleFX();
 	}
 
-	if (!FireAudioCompoent)
+	if (!FireAudioComponent)
 	{
-		FireAudioCompoent = UGameplayStatics::SpawnSoundAttached(FireSound, WeaponMesh, MuzzleSocketName);															 /*, GetMuzzleWorldLocation(), WeaponMesh->GetSocketRotation(MuzzleSocketName), EAttachLocation::SnapToTarget*/
+		FireAudioComponent = UGameplayStatics::SpawnSoundAttached(FireSound, WeaponMesh, MuzzleSocketName);															 /*, GetMuzzleWorldLocation(), WeaponMesh->GetSocketRotation(MuzzleSocketName), EAttachLocation::SnapToTarget*/
 	}
 
 	SetFXActive(true);
@@ -124,9 +124,9 @@ void ASTU_Rifle_Weapon::SetFXActive(bool IsActive)
 		MuzzleFXComponent->SetVisibility(IsActive, true);
 	}
 
-	if (FireAudioCompoent)
+	if (FireAudioComponent)
 	{
-		IsActive ? FireAudioCompoent->Play() : FireAudioCompoent->Stop();
+		FireAudioComponent->SetPaused(!IsActive);
 	}
 }
 

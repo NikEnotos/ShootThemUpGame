@@ -60,7 +60,7 @@ private:
 		UNiagaraComponent* MuzzleFXComponent;
 
 	UPROPERTY()
-		UAudioComponent* FireAudioCompoent;
+		UAudioComponent* FireAudioComponent;
 
 	void MakeDamage(const FHitResult& HitResult);
 
