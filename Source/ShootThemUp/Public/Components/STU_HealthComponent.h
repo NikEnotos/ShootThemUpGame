@@ -90,4 +90,6 @@ private:
 	void ApplyDamage(float Damage, AController* InstigatedBy);
 
 	float GetPointDamageModefier(AActor* DamagedActor, const FName& BoneName);
+
+	void ReportDamageEvent(float Damage, AController* InstigatedBy);
 };

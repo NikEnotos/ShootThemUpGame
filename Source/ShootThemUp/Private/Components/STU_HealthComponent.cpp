@@ -12,6 +12,7 @@
 #include "NiagaraFunctionLibrary.h"
 #include "STUGameModeBase.h"
 #include "PhysicalMaterials/PhysicalMaterial.h"
+#include "Perception/AISense_Damage.h"
 
 USTU_HealthComponent::USTU_HealthComponent()
 {
@@ -80,6 +81,8 @@ void USTU_HealthComponent::ApplyDamage(float Damage, AController* InstigatedBy)
 	UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), BloodEffect, GetOwner()->GetActorLocation());
 
 	PlayCameraShake();
+
+	ReportDamageEvent(Damage, InstigatedBy);
 }
 
 void USTU_HealthComponent::HealUpdate()
@@ -151,4 +154,11 @@ float USTU_HealthComponent::GetPointDamageModefier(AActor* DamagedActor, const F
 	if (!PhysMaterial || !DamageModifiers.Contains(PhysMaterial)) return 1.0f;
 
 	return DamageModifiers[PhysMaterial];
+}
+
+void USTU_HealthComponent::ReportDamageEvent(float Damage, AController* InstigatedBy)
+{
+	if (!InstigatedBy || !InstigatedBy->GetPawn() || !GetOwner()) return; 
+
+	UAISense_Damage::ReportDamageEvent(GetWorld(), GetOwner(), InstigatedBy->GetPawn(), Damage, InstigatedBy->GetPawn()->GetActorLocation(), GetOwner()->GetActorLocation());
 }
