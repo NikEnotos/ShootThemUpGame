@@ -71,6 +71,8 @@ void ASTU_Character::OnDeath()
 {
 	WeaponComponent->StopFire();
 
+	WeaponComponent->Zoom(false);
+
 	//PlayAnimMontage(DeathAnimMontage);
 
 	GetCharacterMovement()->DisableMovement();

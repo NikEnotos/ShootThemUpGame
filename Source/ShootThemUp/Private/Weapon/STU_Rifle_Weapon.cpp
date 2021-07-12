@@ -146,3 +146,17 @@ AController* ASTU_Rifle_Weapon::GetController() const
 	const auto Pawn = Cast<APawn>(GetOwner());
 	return Pawn ? Pawn->GetController() : nullptr;
 }
+
+void ASTU_Rifle_Weapon::Zoom(bool Enabled)
+{
+	const auto Controller = Cast<APlayerController>(GetController());
+	if (!Controller || !Controller->PlayerCameraManager) return;
+
+	if (Enabled)
+	{
+		DefaultCameraFOV = Controller->PlayerCameraManager->GetFOVAngle();
+	}
+
+	Controller->PlayerCameraManager->SetFOV(Enabled ? FeeidOfViewZoomAngle : DefaultCameraFOV);
+	
+}

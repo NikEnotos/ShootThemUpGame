@@ -29,6 +29,8 @@ public:
 	bool TryToAddAmmo(TSubclassOf<ASTU_Base_Weapon> WeaponType, int32 ClipsAmount);
 	bool NeedAmmo(TSubclassOf<ASTU_Base_Weapon> WeaponType);
 
+	void Zoom(bool Enabled);
+
 	bool CharIsRuning = false;
 
 protected:
