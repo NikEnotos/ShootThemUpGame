@@ -2,8 +2,8 @@
 
 
 #include "Components/STU_HealthComponent.h"
-#include "GameFramework/Actor.h"
-#include "GameFramework/Pawn.h"
+//#include "GameFramework/Actor.h"
+#include "GameFramework/Character.h"
 #include "GameFramework/Controller.h"
 #include "Engine/World.h"
 #include "TimerManager.h"
@@ -11,6 +11,7 @@
 #include "NiagaraComponent.h"
 #include "NiagaraFunctionLibrary.h"
 #include "STUGameModeBase.h"
+#include "PhysicalMaterials/PhysicalMaterial.h"
 
 USTU_HealthComponent::USTU_HealthComponent()
 {
@@ -33,14 +34,32 @@ void USTU_HealthComponent::BeginPlay()
 	if (ComponentOwner)
 	{
 		ComponentOwner->OnTakeAnyDamage.AddDynamic(this, &USTU_HealthComponent::OnTakeAnyDamage);
+		ComponentOwner->OnTakePointDamage.AddDynamic(this, &USTU_HealthComponent::OnTakePointDamage);
+		ComponentOwner->OnTakeRadialDamage.AddDynamic(this, &USTU_HealthComponent::OnTakeRadialDamage);
 	}
 
 }
 
+void USTU_HealthComponent::OnTakePointDamage(AActor* DamagedActor, float Damage, class AController* InstigatedBy, FVector HitLocation,
+	class UPrimitiveComponent* FHitComponent, FName BoneName, FVector ShotFromDirection, const class UDamageType* DamageType, AActor* DamageCauser)
+{
+	const auto FinalDamage = Damage * GetPointDamageModefier(DamagedActor, BoneName);
+	ApplyDamage(FinalDamage, InstigatedBy);
+}
+
+void USTU_HealthComponent::OnTakeRadialDamage(AActor* DamagedActor, float Damage, const class UDamageType* DamageType,
+	FVector Origin, FHitResult HitInfo, class AController* InstigatedBy, AActor* DamageCauser)
+{
+	ApplyDamage(Damage, InstigatedBy);
+}
+
 void USTU_HealthComponent::OnTakeAnyDamage(
 	AActor* DamageActor, float Damage, const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser)
-{
+{	
+}
 
+void USTU_HealthComponent::ApplyDamage(float Damage, AController* InstigatedBy)
+{
 	if (Damage <= 0.0f || IsDead() || !GetWorld()) return;
 
 	SetHealth(Health - Damage);
@@ -123,4 +142,13 @@ void USTU_HealthComponent::Killed(AController* KillerController)
 	GameMode->Killed(KillerController, VictimController);
 }
 
+float USTU_HealthComponent::GetPointDamageModefier(AActor* DamagedActor, const FName& BoneName)
+{
+	const auto Character = Cast<ACharacter>(DamagedActor);
+	if (!Character || !Character->GetMesh() || !Character->GetMesh()->GetBodyInstance(BoneName)) return 1.0f;
 
+	const auto PhysMaterial = Character->GetMesh()->GetBodyInstance(BoneName)->GetSimplePhysicalMaterial();
+	if (!PhysMaterial || !DamageModifiers.Contains(PhysMaterial)) return 1.0f;
+
+	return DamageModifiers[PhysMaterial];
+}
