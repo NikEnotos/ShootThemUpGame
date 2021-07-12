@@ -107,3 +107,20 @@ void ASTU_Character::SetPlayerColor(const FLinearColor& Color)
 
 }
 
+void ASTU_Character::TurnOff()
+{
+	WeaponComponent->StopFire();
+
+	WeaponComponent->Zoom(false);
+
+	Super::TurnOff();
+}
+
+void ASTU_Character::Reset()
+{
+	WeaponComponent->StopFire();
+
+	WeaponComponent->Zoom(false);
+
+	Super::Reset();
+}
