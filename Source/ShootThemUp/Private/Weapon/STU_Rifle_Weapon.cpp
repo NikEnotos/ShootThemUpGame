@@ -11,6 +11,10 @@
 #include "Sound/SoundCue.h"
 #include "Components/AudioComponent.h"
 
+#include "GameFramework/Pawn.h"
+#include "GameFramework/Controller.h"
+#include "Camera/CameraShake.h"
+
 //DEFINE_LOG_CATEGORY_STATIC(LogBaseWeapon, All, All);
 
 ASTU_Rifle_Weapon::ASTU_Rifle_Weapon()
@@ -23,6 +27,8 @@ void ASTU_Rifle_Weapon::BeginPlay()
 	Super::BeginPlay();
 
 	check(WeaponFXComponent);
+
+	CurrentBulletSpread = BulletSpread;
 }
 
 void ASTU_Rifle_Weapon::StartFire()
@@ -41,6 +47,7 @@ void ASTU_Rifle_Weapon::StopFire()
 
 	SetFXActive(false);
 
+	CurrentBulletSpread = BulletSpread;
 }
 
 void ASTU_Rifle_Weapon::MakeShot()
@@ -72,7 +79,11 @@ void ASTU_Rifle_Weapon::MakeShot()
 
 	SpawnTraceFX(GetMuzzleWorldLocation(), TraceFXEnd);
 
+	PlayCameraShakeOnShot();
+
 	DecreaseAmmo();
+
+	CurrentBulletSpread += AddToBulletSpreadOnShot;
 
 	//UGameplayStatics::SpawnSoundAtLocation(GetWorld(), FireSound, GetMuzzleWorldLocation());
 }
@@ -85,7 +96,7 @@ bool ASTU_Rifle_Weapon::GetTraceData(FVector& TraceStart, FVector& TraceEnd) con
 
 																//const FTransform SocketTransform = WeaponMesh->GetSocketTransform(MuzzleSocketName);
 	TraceStart = ViewLocation;																							//SocketTransform.GetLocation();
-	const auto HalfRad = FMath::DegreesToRadians(BulletSpread);	//Convert value from degrees in our property to Radians
+	const auto HalfRad = FMath::DegreesToRadians(CurrentBulletSpread);	//Convert value from degrees in our property to Radians
 	const FVector ShootDirection = FMath::VRandCone(ViewRotation.Vector(), HalfRad);									//SocketTransform.GetRotation().GetForwardVector();
 	TraceEnd = TraceStart + ShootDirection * ShotDistance;
 	return true;																										//DrawDebugLine(GetWorld(), TraceStart, TraceEnd, FColor::Blue, false, 3.0f, 0, 3.0f);
@@ -163,4 +174,16 @@ void ASTU_Rifle_Weapon::Zoom(bool Enabled)
 
 	Controller->PlayerCameraManager->SetFOV(Enabled ? FeeidOfViewZoomAngle : DefaultCameraFOV);
 	
+}
+
+void ASTU_Rifle_Weapon::PlayCameraShakeOnShot() const
+{
+	const auto Player = Cast<APawn>(GetOwner());
+	if (!Player) return;
+
+	const auto Controller = Player->GetController<APlayerController>();
+	if (!Controller || !Controller->PlayerCameraManager) return;
+
+	Controller->PlayerCameraManager->StartCameraShake(CameraShakeOnShot);
+
 }

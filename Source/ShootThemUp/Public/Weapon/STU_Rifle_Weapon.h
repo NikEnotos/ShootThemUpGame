@@ -10,6 +10,7 @@ class USTUWeaponFXComponent;
 class UNiagaraComponent;
 class UNiagaraSystem;
 class UAudioComponent;
+class UCameraShakeBase;
 
 UCLASS()
 class SHOOTTHEMUP_API ASTU_Rifle_Weapon : public ASTU_Base_Weapon
@@ -37,6 +38,9 @@ protected:
 		float BulletSpread = 1.5f;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Weapon")
+		float AddToBulletSpreadOnShot = 0.05f;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Weapon")
 		float DamageAmount = 10.0f;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Weapon")
@@ -44,6 +48,9 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "VFX")
 		UNiagaraSystem* TraceFX;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "VFX")
+		TSubclassOf<UCameraShakeBase> CameraShakeOnShot;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "VFX")
 		FString TraceTargetName = "TraceTarget";
@@ -76,7 +83,11 @@ private:
 
 	AController* GetController() const;
 
+	void PlayCameraShakeOnShot() const;
+
 	float DefaultCameraFOV = 90.0f;
+
+	float CurrentBulletSpread = BulletSpread;
 };
 
 
