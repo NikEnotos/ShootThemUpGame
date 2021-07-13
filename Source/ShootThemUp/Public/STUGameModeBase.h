@@ -49,6 +49,16 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Game")
 		FGameData GameData;
 
+	virtual void SpawnBots();
+
+	virtual void ResetOnePlayer(AController* Controller);
+
+	virtual void CreateTeamsInfo();
+
+	FLinearColor DetermineColorByTeamID(int32 TeamID) const;
+
+	void SetPlayerColor(AController* Controller);
+
 private:
 
 	ESTUMatchState MatchState = ESTUMatchState::WaitingToStart;
@@ -58,21 +68,15 @@ private:
 
 	FTimerHandle GameRoundTimerHandle;
 
-	void SpawnBots();
-
 	void StartRound();
 
 	void GameTimerUpdate();
 
 	void ResetPlayers();
 
-	void ResetOnePlayer(AController* Controller);
+	//void ResetOnePlayer(AController* Controller);
 
-	void CreateTeamsInfo();
-
-	FLinearColor DetermineColorByTeamID(int32 TeamID) const;
-
-	void SetPlayerColor(AController* Controller);
+	//void CreateTeamsInfo();
 
 	void LogPlayerInfo();
 
@@ -83,4 +87,6 @@ private:
 	void SetMatchState(ESTUMatchState State);
 
 	void StopAllFire();
+
+	//AActor* GetStartSpotOnTeamID(int32 TeamID);
 };
