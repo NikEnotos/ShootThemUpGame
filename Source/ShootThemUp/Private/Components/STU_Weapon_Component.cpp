@@ -292,3 +292,14 @@ void USTU_Weapon_Component::Zoom(bool Enabled)
 		CurrentWeapon->Zoom(Enabled);
 	}
 }
+
+float USTU_Weapon_Component::GetCurrentBulletSpread()
+{
+
+	if (CurrentWeapon)
+	{
+		return CurrentWeapon->GetCurrentBulletSpread();
+	}
+	else return 0.0f;
+
+}

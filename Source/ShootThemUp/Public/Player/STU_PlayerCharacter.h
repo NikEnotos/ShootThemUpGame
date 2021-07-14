@@ -9,6 +9,8 @@
 class UCameraComponent;
 class USpringArmComponent;
 class USphereComponent;
+class UCameraShakeBase;
+
 
 UCLASS()
 class SHOOTTHEMUP_API ASTU_PlayerCharacter : public ASTU_Character
@@ -29,6 +31,9 @@ protected:
 
 	UPROPERTY(VisibleAnyWhere, BlueprintReadWrite, Category = "Components")
 		USphereComponent* CameraCollisionComponent;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "VFX")
+		TSubclassOf<UCameraShakeBase> CameraShakeOnMove;
 
 	virtual void OnDeath() override;
 
@@ -58,4 +63,6 @@ private:
 		void OnCameraCollisionEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
 	void CheckCameraOverlap();
+
+	void PlayCameraShakeOnMove();
 };

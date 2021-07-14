@@ -26,6 +26,8 @@ public:
 	virtual void StartFire();
 	virtual void StopFire();
 
+	virtual float GetCurrentBulletSpread() { return 0.0f; }
+
 	void ChangeClip();
 	bool CanReload() const;
 

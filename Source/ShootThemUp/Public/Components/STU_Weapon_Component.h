@@ -33,6 +33,8 @@ public:
 
 	bool CharIsRuning = false;
 
+	float GetCurrentBulletSpread();
+
 protected:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Weapon")

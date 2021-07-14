@@ -8,6 +8,7 @@
 #include "STU_PlayerHUDWidget.generated.h"
 
 class UProgressBar;
+class ASTU_Rifle_Weapon;
 
 UCLASS()
 class SHOOTTHEMUP_API USTU_PlayerHUDWidget : public USTUBaseWidget
@@ -15,6 +16,9 @@ class SHOOTTHEMUP_API USTU_PlayerHUDWidget : public USTUBaseWidget
 	GENERATED_BODY()
 	
 public:
+
+	UFUNCTION(BlueprintCallable, Category = "Weapon")
+		float GetCurrentBulletSpread();
 
 	UFUNCTION(BlueprintCallable, Category = "UI")
 		float GetHealthPersent() const;
@@ -60,7 +64,10 @@ protected:
 	virtual void NativeOnInitialized() override;
 
 private:
-	
+
+	UPROPERTY()
+		ASTU_Rifle_Weapon* STU_Rifle_Weapon;
+ 	
 	void OnHealthChanged(float Health, float HealthDelta);
 
 	void OnNewPawn(APawn* NewPawn);

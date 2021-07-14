@@ -26,6 +26,9 @@ public:
 
 	virtual void Zoom(bool Enabled) override;
 
+	virtual float GetCurrentBulletSpread() override { return CurrentBulletSpread; }
+
+
 protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Weapon")
@@ -87,7 +90,7 @@ private:
 
 	float DefaultCameraFOV = 90.0f;
 
-	float CurrentBulletSpread = BulletSpread;
+	float CurrentBulletSpread;
 };
 
 

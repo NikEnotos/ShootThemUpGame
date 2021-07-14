@@ -9,6 +9,10 @@
 #include "Components/SphereComponent.h"
 #include "Components/CapsuleComponent.h"
 
+#include "GameFramework/Pawn.h"
+#include "GameFramework/Controller.h"
+#include "Camera/CameraShake.h"
+
 ASTU_PlayerCharacter::ASTU_PlayerCharacter(const FObjectInitializer& ObjInit) : Super(ObjInit)
 {
 	PrimaryActorTick.bCanEverTick = true;
@@ -100,15 +104,21 @@ void ASTU_PlayerCharacter::MoveForward(float Amount)
 	IsMovingForward = Amount > 0.0f;
 
 	AddMovementInput(GetActorForwardVector(), Amount);
+
+	PlayCameraShakeOnMove();
 }
 
 void ASTU_PlayerCharacter::MoveRight(float Amount)
 {
 	AddMovementInput(GetActorRightVector(), Amount);
+
+	PlayCameraShakeOnMove();
 }
 
 void ASTU_PlayerCharacter::OnStartRunning()
 {
+	WeaponComponent->StopFire();
+
 	WeaponComponent->CharIsRuning = true;
 	WantsToRun = true;
 }
@@ -135,3 +145,13 @@ void ASTU_PlayerCharacter::OnDeath()
 	
 }
 
+void ASTU_PlayerCharacter::PlayCameraShakeOnMove()
+{
+	//const auto Player = Cast<APawn>(GetOwner());
+	//if (!Player) return;
+
+	//const auto Controller = Player->GetController<APlayerController>();
+	//if (!Controller || !Controller->PlayerCameraManager) return;
+
+	Cast<APlayerController>(Controller)->PlayerCameraManager->StartCameraShake(CameraShakeOnMove);
+}

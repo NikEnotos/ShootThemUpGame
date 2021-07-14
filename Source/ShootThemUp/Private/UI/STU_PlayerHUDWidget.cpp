@@ -122,3 +122,11 @@ FString USTU_PlayerHUDWidget::FormatBullets(int32 BulletsNum) const
 
 	return BulletStr;
 }
+
+float USTU_PlayerHUDWidget::GetCurrentBulletSpread()
+{
+	const auto WeaponComponent = STUUtils::GetSTUPlayerComponent<USTU_Weapon_Component>(GetOwningPlayerPawn());
+	if (!WeaponComponent) return 0.0f;
+
+	return WeaponComponent->GetCurrentBulletSpread();
+}
