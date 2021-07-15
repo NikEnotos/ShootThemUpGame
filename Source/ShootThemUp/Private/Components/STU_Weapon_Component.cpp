@@ -12,7 +12,7 @@
 
 DEFINE_LOG_CATEGORY_STATIC(LogWeaponComponent, All, All);
 
-constexpr static int32 WeaponNum = 2;
+//constexpr static int32 WeaponNum = 2;
 
 USTU_Weapon_Component::USTU_Weapon_Component()
 {
@@ -25,7 +25,7 @@ void USTU_Weapon_Component::BeginPlay()
 {
 	Super::BeginPlay();
 
-	checkf(WeaponData.Num() == WeaponNum, TEXT("Our character can hold only %i weapon items"), WeaponNum);
+	//checkf(WeaponData.Num() == WeaponNum, TEXT("Our character can hold only %i weapon items"), WeaponNum);
 
 	CurrentWeaponIndex = 0;
 	InitAnimations();
@@ -51,8 +51,11 @@ void USTU_Weapon_Component::SpawnWeapons()
 	ACharacter* Character = Cast<ACharacter>(GetOwner());
 	if (!Character || !GetWorld()) return;
 
-	for (auto OneWeaponData : WeaponData)
+	//for (auto OneWeaponData : WeaponData)
+	while(Weapons.Num() !=2)
 	{
+		auto OneWeaponData = WeaponData[FMath::Rand() % WeaponData.Num()];
+
 		auto Weapon = GetWorld()->SpawnActor<ASTU_Base_Weapon>(OneWeaponData.WeaponClass);
 		if (!Weapon) continue;
 
