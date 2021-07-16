@@ -12,6 +12,11 @@ class UNiagaraSystem;
 class UNiagaraComponent;
 class USoundCue;
 
+class USphereComponent;
+class UWidgetComponent;
+
+class USkeletalMesh;
+
 UCLASS()
 class SHOOTTHEMUP_API ASTU_Base_Weapon : public AActor
 {
@@ -28,11 +33,18 @@ public:
 
 	virtual float GetCurrentBulletSpread() { return 0.0f; }
 
+	TSubclassOf<ASTU_Base_Weapon> GetWeaponClass() { return GetClass(); }
+
+	void SetSimulatePhysicsForDrop(bool IsSimulate);
+	void SetCollisionForWeaponOnHand();
+
 	void ChangeClip();
 	bool CanReload() const;
 
 	FWeaponUIData GetUIData() const { return UIData; }
+
 	FAmmoData GetAmmoData() const { return CurrentAmmo; }
+	void SetCurrentAmmoOnDrop(FAmmoData AmmoOnDrop) { CurrentAmmo = AmmoOnDrop; }
 
 	bool TryToAddAmmo(int32 ClipsAmount);
 
@@ -40,12 +52,26 @@ public:
 
 	bool ISAmmoFull() const;
 
+	void InfoOnPickup(bool IsVisible);
+
 	virtual void Zoom(bool Enabled) {}
+
+	void IsPickupped(bool IsPiskupped);
 
 protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
 		USkeletalMeshComponent* WeaponMesh;
+
+	UPROPERTY(VisibleAnywhere, Category = "Pickup")
+		USphereComponent* CollisionComponent;
+
+	UPROPERTY(VisibleAnyWhere, BlueprintReadWrite, Category = "Components")
+		UWidgetComponent* WeaponWidgetComponent;
+
+
+	//UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
+		//USkeletalMesh* WeaponMesh;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Weapon")
 		FName MuzzleSocketName = "MuzzleSocket";
@@ -64,6 +90,9 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Sound")
 		USoundCue* FireSound;
+
+	virtual void NotifyActorBeginOverlap(AActor* OtherActor) override;
+	virtual void NotifyActorEndOverlap(AActor* OtherActor) override;
 
 	virtual void BeginPlay() override;
 

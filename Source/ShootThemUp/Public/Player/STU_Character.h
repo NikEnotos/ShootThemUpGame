@@ -19,6 +19,7 @@ public:
 	// Sets default values for this character's properties
 	ASTU_Character(const FObjectInitializer& ObjInit);
 
+
 protected:
 
 	UPROPERTY(VisibleAnyWhere, BlueprintReadWrite, Category = "Components")

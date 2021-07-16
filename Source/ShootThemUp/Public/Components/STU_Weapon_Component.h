@@ -29,13 +29,25 @@ public:
 	bool TryToAddAmmo(TSubclassOf<ASTU_Base_Weapon> WeaponType, int32 ClipsAmount);
 	bool NeedAmmo(TSubclassOf<ASTU_Base_Weapon> WeaponType);
 
+	bool GetWantToPickupWeapon() { return WantToPickupWeapon; }
+	void SetWantToPickupWeapon(bool DoWants);
+
 	void Zoom(bool Enabled);
 
 	bool CharIsRuning = false;
 
 	float GetCurrentBulletSpread();
 
+	void SetCanPickup(bool IsCan) { CanPickup = IsCan; }
+	bool GetCanPickup() { return CanPickup; }
+
+	bool PickupWeapon(TSubclassOf<ASTU_Base_Weapon> PickupedWeapon, FAmmoData AmmoInPickupedWeapon);
+
+	bool DropCurrentWeapon();
+
 protected:
+
+	bool CanPickup = false;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
 	TArray<FWeaponData> WeaponData;
@@ -75,6 +87,8 @@ private:
 	bool EquipAnimInProgres = false;
 	bool ReloadAnimInProgres = false;
 
+	bool WantToPickupWeapon = false;
+
 	void SpawnWeapons();
 
 	void AttachWeaponToSocket(ASTU_Base_Weapon* Weapon, USceneComponent* SceneComponent, const FName& SocketName);
@@ -91,4 +105,9 @@ private:
 	void OnClipEmpty(ASTU_Base_Weapon* AmmoEmptyWeapon);
 	void ChangeClip();
 
+	UPROPERTY(EditDefaultsOnly, Category = "Drop")
+		float DropDistance = 400.0f;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Drop")
+		float TimeOfExistDroppedWeapon = 30.0f;
 };

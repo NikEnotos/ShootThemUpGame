@@ -9,6 +9,8 @@
 #include "Animation/AnimUtils.h"
 #include "Components/STU_HealthComponent.h"
 #include "STUUtils.h"
+#include "GameFramework/Actor.h"
+
 
 DEFINE_LOG_CATEGORY_STATIC(LogWeaponComponent, All, All);
 
@@ -60,6 +62,8 @@ void USTU_Weapon_Component::SpawnWeapons()
 		if (!Weapon) continue;
 
 		Weapon->OnClipEmpty.AddUObject(this, &USTU_Weapon_Component::OnClipEmpty);
+
+		Weapon->SetCollisionForWeaponOnHand();
 
 		Weapon->SetOwner(Character);
 		Weapons.Add(Weapon);
@@ -305,4 +309,106 @@ float USTU_Weapon_Component::GetCurrentBulletSpread()
 	}
 	else return 0.0f;
 
+}
+
+void USTU_Weapon_Component::SetWantToPickupWeapon(bool DoWants)
+{
+	WantToPickupWeapon = DoWants;
+
+	if (!DoWants) return;
+
+	//ACharacter* Character = Cast<ACharacter>(GetOwner());
+	//if (!Character || !GetWorld()) return;
+
+
+	 //Character->GetOverlappingActors(OverlapingActors);
+	TArray<AActor*> OverlapingActors;
+
+	GetOwner()->GetOverlappingActors(OverlapingActors);
+
+	 for (auto WeaponPickup : OverlapingActors)
+	 {
+		 if (auto Weapon = Cast<ASTU_Base_Weapon>(WeaponPickup))
+		 {
+			 UE_LOG(LogWeaponComponent, Display, TEXT("--------WEAPON PICKUP EXIST--------"));
+
+			 auto TryToPickup = PickupWeapon(Weapon->GetWeaponClass(), Weapon->GetAmmoData());
+
+			 if (TryToPickup)
+			 {
+				 Weapon->IsPickupped(true);
+
+				 UE_LOG(LogWeaponComponent, Display, TEXT("--------WEAPON PICKUPPED--------"));
+
+				 return;
+			 }
+		 }
+	 }
+
+	 UE_LOG(LogWeaponComponent, Display, TEXT("--------NO PICKUPS--------"));
+}
+
+bool USTU_Weapon_Component::PickupWeapon(TSubclassOf<ASTU_Base_Weapon> PickupedWeapon, FAmmoData AmmoInPickupedWeapon)
+{
+	//UE_LOG(LogWeaponComponent, Display, TEXT("--------1 Enter--------CanPickup: %d, WantToPickupWeapon: %d, CanEquip: %d"), CanPickup, WantToPickupWeapon, CanEquip());
+	if (!CanPickup || !WantToPickupWeapon || !CanEquip() || !CurrentWeapon) return false;
+
+	auto IsDropped = DropCurrentWeapon();
+	if (!IsDropped) return false;
+
+	ACharacter* Character = Cast<ACharacter>(GetOwner());
+	if (!Character || !GetWorld()) return false;
+
+	auto Weapon = GetWorld()->SpawnActor<ASTU_Base_Weapon>(PickupedWeapon);
+	if (!Weapon) return false;
+	
+	Weapon->OnClipEmpty.AddUObject(this, &USTU_Weapon_Component::OnClipEmpty);
+
+	Weapon->SetOwner(Character);
+	Weapons.Add(Weapon);
+
+	AttachWeaponToSocket(Weapon, Character->GetMesh(), WeaponArmorySocketName);
+
+	Weapon->SetCurrentAmmoOnDrop(AmmoInPickupedWeapon);
+
+	Weapon->InfoOnPickup(false);
+
+	Weapon->SetCollisionForWeaponOnHand();
+
+	NextWeapon();
+
+	return true;
+}
+
+bool USTU_Weapon_Component::DropCurrentWeapon()
+{
+	//UE_LOG(LogWeaponComponent, Display, TEXT("--------2 Enter-------- CurrentWeapon: %d, EquipAnimInProgres: %d, ReloadAnimInProgres: %d"), CurrentWeapon, EquipAnimInProgres, ReloadAnimInProgres);
+	if (!CurrentWeapon/* || EquipAnimInProgres || ReloadAnimInProgres*/) return false;
+
+	ACharacter* Character = Cast<ACharacter>(GetOwner());
+	if (!Character || !GetWorld()) return false;
+
+
+	FTransform Transform;
+
+	Transform.SetLocation(Character->GetTransform().GetLocation() + (Character->GetActorForwardVector() * DropDistance));
+	Transform.SetRotation(Character->GetTransform().GetRotation());
+	Transform.SetScale3D(Character->GetTransform().GetScale3D());
+
+	auto Weapon = GetWorld()->SpawnActor<ASTU_Base_Weapon>(CurrentWeapon->GetClass(), Transform);
+	if (!Weapon) return false;
+
+	Weapon->SetSimulatePhysicsForDrop(true);
+
+	Weapon->SetCurrentAmmoOnDrop(CurrentWeapon->GetAmmoData());
+
+	Weapon->SetLifeSpan(TimeOfExistDroppedWeapon);
+
+	Weapons.Remove(CurrentWeapon);
+
+	CurrentWeapon->Destroy();
+
+	NextWeapon();
+
+	return true;
 }

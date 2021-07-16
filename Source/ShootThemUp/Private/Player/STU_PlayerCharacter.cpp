@@ -93,6 +93,12 @@ void ASTU_PlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInpu
 	PlayerInputComponent->BindAction("NextWeapon", IE_Pressed, WeaponComponent, &USTU_Weapon_Component::NextWeapon);
 	PlayerInputComponent->BindAction("Reload", IE_Pressed, WeaponComponent, &USTU_Weapon_Component::Reload);
 
+	//PlayerInputComponent->BindAction("DropCurrentWeapon", IE_Pressed, WeaponComponent, &USTU_Weapon_Component::DropCurrentWeapon);
+
+	DECLARE_DELEGATE_OneParam(FPickupweaponInputSignature, bool);
+	PlayerInputComponent->BindAction<FPickupweaponInputSignature>("PickupWeapon", IE_Pressed, WeaponComponent, &USTU_Weapon_Component::SetWantToPickupWeapon, true);
+	PlayerInputComponent->BindAction<FPickupweaponInputSignature>("PickupWeapon", IE_Released, WeaponComponent, &USTU_Weapon_Component::SetWantToPickupWeapon, false);
+
 	DECLARE_DELEGATE_OneParam(FZoomInputSignature, bool);
 	PlayerInputComponent->BindAction<FZoomInputSignature>("Zoom", IE_Pressed, WeaponComponent, &USTU_Weapon_Component::Zoom, true);
 	PlayerInputComponent->BindAction<FZoomInputSignature>("Zoom", IE_Released, WeaponComponent, &USTU_Weapon_Component::Zoom, false);

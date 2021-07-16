@@ -9,6 +9,14 @@
 #include "NiagaraFunctionLibrary.h"
 #include "NiagaraComponent.h"
 
+#include "Kismet/GameplayStatics.h"
+#include "Components/SphereComponent.h"
+#include "Components/WidgetComponent.h"
+#include "STU_Character.h"
+#include "Player/STU_PlayerCharacter.h"
+#include "STUUtils.h"
+#include "Components/STU_Weapon_Component.h"
+
 DEFINE_LOG_CATEGORY_STATIC(LogBaseWeapon, All, All);
 
 ASTU_Base_Weapon::ASTU_Base_Weapon()
@@ -18,6 +26,23 @@ ASTU_Base_Weapon::ASTU_Base_Weapon()
 
 	WeaponMesh = CreateDefaultSubobject<USkeletalMeshComponent>("WeaponMesh");
 	SetRootComponent(WeaponMesh);
+
+	//SetRootComponent(WeaponMesh);
+
+	//WeaponMesh = CreateDefaultSubobject<USkeletalMesh>("WeaponMesh");
+
+	CollisionComponent = CreateDefaultSubobject<USphereComponent>("SphereComponent");
+	CollisionComponent->InitSphereRadius(70.0f);
+	//CollisionComponent->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	CollisionComponent->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Overlap);
+	CollisionComponent->SetupAttachment(GetRootComponent());
+
+
+	WeaponWidgetComponent = CreateDefaultSubobject<UWidgetComponent>("WeaponWidgetComponent");
+	WeaponWidgetComponent->SetupAttachment(GetRootComponent());
+	WeaponWidgetComponent->SetWidgetSpace(EWidgetSpace::Screen);
+	WeaponWidgetComponent->SetDrawAtDesiredSize(true);
+	WeaponWidgetComponent->SetVisibility(false);
 }
 
 
@@ -207,4 +232,82 @@ UNiagaraComponent* ASTU_Base_Weapon::SpawnMuzzleFX()
 		FRotator::ZeroRotator,								//
 		EAttachLocation::SnapToTarget,						//
 		true);
+}
+
+void ASTU_Base_Weapon::NotifyActorBeginOverlap(AActor* OtherActor)
+{	Super::NotifyActorBeginOverlap(OtherActor);
+
+	if (!Cast<ASTU_Character>(OtherActor)) return;
+
+
+	UE_LOG(LogBaseWeapon, Display, TEXT("--------BEGIN OVERLAP--------"));
+
+	const auto STUPlayerCharacter = Cast<ASTU_PlayerCharacter>(OtherActor);
+	if(STUPlayerCharacter)
+	{
+		InfoOnPickup(true);
+	}
+
+	SetSimulatePhysicsForDrop(false);
+
+	WeaponMesh->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);
+
+	const auto WeaponComponent = STUUtils::GetSTUPlayerComponent<USTU_Weapon_Component>(OtherActor);
+	if (WeaponComponent) WeaponComponent->SetCanPickup(true);
+
+
+}
+
+void ASTU_Base_Weapon::NotifyActorEndOverlap(AActor* OtherActor)
+{	Super::NotifyActorEndOverlap(OtherActor);
+
+	if (!Cast<ASTU_Character>(OtherActor)) return;
+
+
+	const auto STUPlayerCharacter = Cast<ASTU_PlayerCharacter>(OtherActor);
+	if (STUPlayerCharacter)
+	{
+		InfoOnPickup(false);
+	}
+
+	SetSimulatePhysicsForDrop(true);
+
+	const auto WeaponComponent = STUUtils::GetSTUPlayerComponent<USTU_Weapon_Component>(OtherActor);
+	if (WeaponComponent) WeaponComponent->SetCanPickup(false);
+
+
+	UE_LOG(LogBaseWeapon, Display, TEXT("--------END OVERLAP--------"));
+
+}
+
+void ASTU_Base_Weapon::InfoOnPickup(bool IsVisible)
+{
+	WeaponWidgetComponent->SetVisibility(IsVisible);
+
+	WeaponMesh->SetRenderCustomDepth(IsVisible);
+}
+
+void ASTU_Base_Weapon::SetSimulatePhysicsForDrop(bool IsSimulate)
+{
+/*	if(IsSimulate) WeaponMesh->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);
+
+	if(!IsSimulate) */
+	
+	WeaponMesh->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);
+
+	WeaponMesh->SetSimulatePhysics(IsSimulate);
+}
+
+void ASTU_Base_Weapon::SetCollisionForWeaponOnHand()
+{
+	WeaponMesh->SetSimulatePhysics(false);
+
+	WeaponMesh->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
+
+	CollisionComponent->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
+}
+
+void ASTU_Base_Weapon::IsPickupped(bool IsPiskupped)
+{
+	if (IsPiskupped) Destroy();
 }
