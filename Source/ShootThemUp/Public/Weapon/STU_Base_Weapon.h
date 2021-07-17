@@ -15,8 +15,6 @@ class USoundCue;
 class USphereComponent;
 class UWidgetComponent;
 
-class USkeletalMesh;
-
 UCLASS()
 class SHOOTTHEMUP_API ASTU_Base_Weapon : public AActor
 {
@@ -66,7 +64,7 @@ protected:
 	UPROPERTY(VisibleAnywhere, Category = "Pickup")
 		USphereComponent* CollisionComponent;
 
-	UPROPERTY(VisibleAnyWhere, BlueprintReadWrite, Category = "Components")
+	UPROPERTY(VisibleAnyWhere, BlueprintReadWrite, Category = "DropUI")
 		UWidgetComponent* WeaponWidgetComponent;
 
 

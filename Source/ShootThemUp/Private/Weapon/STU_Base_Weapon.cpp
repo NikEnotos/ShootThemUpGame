@@ -16,6 +16,7 @@
 #include "Player/STU_PlayerCharacter.h"
 #include "STUUtils.h"
 #include "Components/STU_Weapon_Component.h"
+#include "UI/DropWeaponInfoWidget.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogBaseWeapon, All, All);
 
@@ -43,6 +44,7 @@ ASTU_Base_Weapon::ASTU_Base_Weapon()
 	WeaponWidgetComponent->SetWidgetSpace(EWidgetSpace::Screen);
 	WeaponWidgetComponent->SetDrawAtDesiredSize(true);
 	WeaponWidgetComponent->SetVisibility(false);
+
 }
 
 
@@ -53,6 +55,10 @@ void ASTU_Base_Weapon::BeginPlay()
 	checkf(DefaultAmmo.Bullets > 0, TEXT("Bullets count coudn`t be less or equal zero"));
 	checkf(DefaultAmmo.Clips > 0, TEXT("Clips count coudn`t be less or equal zero"));
 	check(WeaponMesh);
+
+	const auto WeaponWidget = Cast<UDropWeaponInfoWidget>(WeaponWidgetComponent->GetUserWidgetObject());
+	if (WeaponWidget) WeaponWidget->SetDroppedWeaponUIData(GetUIData());
+	
 
 	CurrentAmmo = DefaultAmmo;
 }
