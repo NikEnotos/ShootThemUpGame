@@ -24,8 +24,8 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Weapon")
 		TSubclassOf<ASTU_Projectile> ProjectileClass;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Sound")
-		USoundCue* NoAmmoSound;
+	//UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Sound")
+	//	USoundCue* NoAmmoSound;
 
 	virtual void MakeShot() override;
 

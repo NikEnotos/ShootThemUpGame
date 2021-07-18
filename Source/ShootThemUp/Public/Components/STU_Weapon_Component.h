@@ -45,6 +45,8 @@ public:
 
 	bool DropCurrentWeapon();
 
+	TArray<ASTU_Base_Weapon*> GetWeapons() { return Weapons; }
+
 protected:
 
 	bool CanPickup = false;

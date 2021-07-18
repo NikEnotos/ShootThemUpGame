@@ -33,6 +33,14 @@ void ASTU_Rifle_Weapon::BeginPlay()
 
 void ASTU_Rifle_Weapon::StartFire()
 {
+	if (!GetWorld()) return;
+
+	if (IsAmmoEmpty())
+	{
+		UGameplayStatics::SpawnSoundAtLocation(GetWorld(), NoAmmoSound, GetActorLocation());
+		return;
+	}
+
 	InitFX();
 
 	//UE_LOG(LogBaseWeapon, Display, TEXT("FIRE"));
@@ -53,7 +61,14 @@ void ASTU_Rifle_Weapon::StopFire()
 void ASTU_Rifle_Weapon::MakeShot()
 {
 
-	if (!GetWorld() || IsAmmoEmpty()) return;
+	if (!GetWorld()) return;
+
+	if (IsAmmoEmpty())
+	{
+		UGameplayStatics::SpawnSoundAtLocation(GetWorld(), NoAmmoSound, GetActorLocation());
+		StopFire();
+		return;
+	}
 
 	FVector TraceStart, TraceEnd;
 	if (!GetTraceData(TraceStart, TraceEnd)) return;
@@ -79,11 +94,13 @@ void ASTU_Rifle_Weapon::MakeShot()
 
 	SpawnTraceFX(GetMuzzleWorldLocation(), TraceFXEnd);
 
-	PlayCameraShakeOnShot();
-
 	DecreaseAmmo();
 
+	UGameplayStatics::SpawnSoundAtLocation(GetWorld(), FireSound, GetActorLocation());
+
 	CurrentBulletSpread += AddToBulletSpreadOnShot;
+
+	PlayCameraShakeOnShot();
 
 	//UGameplayStatics::SpawnSoundAtLocation(GetWorld(), FireSound, GetMuzzleWorldLocation());
 }
@@ -121,10 +138,10 @@ void ASTU_Rifle_Weapon::InitFX()
 		MuzzleFXComponent = SpawnMuzzleFX();
 	}
 
-	if (!FireAudioComponent)
-	{
-		FireAudioComponent = UGameplayStatics::SpawnSoundAttached(FireSound, WeaponMesh, MuzzleSocketName);															 /*, GetMuzzleWorldLocation(), WeaponMesh->GetSocketRotation(MuzzleSocketName), EAttachLocation::SnapToTarget*/
-	}
+	//if (!FireAudioComponent)
+	//{
+	//	FireAudioComponent = UGameplayStatics::SpawnSoundAttached(FireSound, WeaponMesh, MuzzleSocketName);															 /*, GetMuzzleWorldLocation(), WeaponMesh->GetSocketRotation(MuzzleSocketName), EAttachLocation::SnapToTarget*/
+	//}
 
 	SetFXActive(true);
 
@@ -139,10 +156,10 @@ void ASTU_Rifle_Weapon::SetFXActive(bool IsActive)
 		MuzzleFXComponent->SetVisibility(IsActive, true);
 	}
 
-	if (FireAudioComponent)
-	{
-		FireAudioComponent->SetPaused(!IsActive);
-	}
+	//if (FireAudioComponent)
+	//{
+	//	FireAudioComponent->SetPaused(!IsActive);
+	//}
 }
 
 void ASTU_Rifle_Weapon::SpawnTraceFX(const FVector& TraceStart, const FVector& TraceEnd)
