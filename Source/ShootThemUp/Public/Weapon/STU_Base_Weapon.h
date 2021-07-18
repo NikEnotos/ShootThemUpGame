@@ -29,6 +29,8 @@ public:
 	virtual void StartFire();
 	virtual void StopFire();
 
+	USkeletalMeshComponent* GetWeaponMesh() { return WeaponMesh; }
+
 	virtual float GetCurrentBulletSpread() { return 0.0f; }
 
 	TSubclassOf<ASTU_Base_Weapon> GetWeaponClass() { return GetClass(); }

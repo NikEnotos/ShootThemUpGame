@@ -55,12 +55,17 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
 	FName WeaponEquipSocketName = "WeaponSocket";
 
-
 	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
 	FName WeaponArmorySocketName = "ArmorySocket";
 
 	UPROPERTY(EditDefaultsOnly, Category = "Animations")
 	UAnimMontage* EquipAnimMontage;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Drop")
+		float DropDistance = 400.0f;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Drop")
+		float TimeOfExistDroppedWeapon = 30.0f;
 
 	UPROPERTY()
 	ASTU_Base_Weapon* CurrentWeapon = nullptr;
@@ -104,10 +109,4 @@ private:
 
 	void OnClipEmpty(ASTU_Base_Weapon* AmmoEmptyWeapon);
 	void ChangeClip();
-
-	UPROPERTY(EditDefaultsOnly, Category = "Drop")
-		float DropDistance = 400.0f;
-
-	UPROPERTY(EditDefaultsOnly, Category = "Drop")
-		float TimeOfExistDroppedWeapon = 30.0f;
 };

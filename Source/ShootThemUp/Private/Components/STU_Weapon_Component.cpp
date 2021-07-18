@@ -41,8 +41,11 @@ void USTU_Weapon_Component::EndPlay(const EEndPlayReason::Type EndPlayReason)
 	CurrentWeapon = nullptr;
 	for (auto Weapon : Weapons)
 	{
-		Weapon->DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);  
-		Weapon->Destroy();
+		if (Weapon)
+		{
+			Weapon->DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
+			Weapon->Destroy();
+		}
 	}
 	Weapons.Empty();
 	Super::EndPlay(EndPlayReason);
@@ -54,7 +57,7 @@ void USTU_Weapon_Component::SpawnWeapons()
 	if (!Character || !GetWorld()) return;
 
 	//for (auto OneWeaponData : WeaponData)
-	while(Weapons.Num() !=2)
+	while(Weapons.Num() != 2)
 	{
 		auto OneWeaponData = WeaponData[FMath::Rand() % WeaponData.Num()];
 
@@ -84,7 +87,7 @@ void USTU_Weapon_Component::AttachWeaponToSocket(ASTU_Base_Weapon* Weapon, UScen
 
 void USTU_Weapon_Component::EquipWeapon(int32 WeaponIndex)
 {
-	if (WeaponIndex<0 || WeaponIndex>Weapons.Num())
+	if (WeaponIndex<0 || WeaponIndex>Weapons.Num() || !Weapons[WeaponIndex])
 	{
 		UE_LOG(LogWeaponComponent, Warning, TEXT("Invalid Weapon Index!"));
 		return;
@@ -354,28 +357,30 @@ bool USTU_Weapon_Component::PickupWeapon(TSubclassOf<ASTU_Base_Weapon> PickupedW
 	if (!CanPickup || !WantToPickupWeapon || !CanEquip() || !CurrentWeapon) return false;
 
 	auto IsDropped = DropCurrentWeapon();
-	if (!IsDropped) return false;
+		if (!IsDropped) return false;
 
 	ACharacter* Character = Cast<ACharacter>(GetOwner());
-	if (!Character || !GetWorld()) return false;
+		if (!Character || !GetWorld()) return false;
 
 	auto Weapon = GetWorld()->SpawnActor<ASTU_Base_Weapon>(PickupedWeapon);
-	if (!Weapon) return false;
+		if (!Weapon) return false;
 	
 	Weapon->OnClipEmpty.AddUObject(this, &USTU_Weapon_Component::OnClipEmpty);
 
 	Weapon->SetOwner(Character);
-	Weapons.Add(Weapon);
 
-	AttachWeaponToSocket(Weapon, Character->GetMesh(), WeaponArmorySocketName);
+	Weapon->SetCollisionForWeaponOnHand();
 
 	Weapon->SetCurrentAmmoOnDrop(AmmoInPickupedWeapon);
 
 	Weapon->InfoOnPickup(false);
 
-	Weapon->SetCollisionForWeaponOnHand();
+	Weapons[CurrentWeaponIndex] = Weapon;
 
-	NextWeapon();
+	AttachWeaponToSocket(Weapon, Character->GetMesh(), WeaponEquipSocketName);
+		//Weapons.Add(Weapon);
+
+	CurrentWeapon = Weapon;
 
 	return true;
 }
@@ -386,7 +391,7 @@ bool USTU_Weapon_Component::DropCurrentWeapon()
 	if (!CurrentWeapon/* || EquipAnimInProgres || ReloadAnimInProgres*/) return false;
 
 	ACharacter* Character = Cast<ACharacter>(GetOwner());
-	if (!Character || !GetWorld()) return false;
+		if (!Character || !GetWorld()) return false;
 
 
 	FTransform Transform;
@@ -396,19 +401,21 @@ bool USTU_Weapon_Component::DropCurrentWeapon()
 	Transform.SetScale3D(Character->GetTransform().GetScale3D());
 
 	auto Weapon = GetWorld()->SpawnActor<ASTU_Base_Weapon>(CurrentWeapon->GetClass(), Transform);
-	if (!Weapon) return false;
+		if (!Weapon) return false;
 
 	Weapon->SetSimulatePhysicsForDrop(true);
 
 	Weapon->SetCurrentAmmoOnDrop(CurrentWeapon->GetAmmoData());
 
 	Weapon->SetLifeSpan(TimeOfExistDroppedWeapon);
-
-	Weapons.Remove(CurrentWeapon);
+	
+	Weapons[CurrentWeaponIndex] = nullptr;
+	//Weapons.Remove(CurrentWeapon);
 
 	CurrentWeapon->Destroy();
 
-	NextWeapon();
+	CurrentWeapon = nullptr;
+	//NextWeapon();
 
 	return true;
 }

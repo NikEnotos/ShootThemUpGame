@@ -27,10 +27,9 @@ ASTU_Base_Weapon::ASTU_Base_Weapon()
 
 	WeaponMesh = CreateDefaultSubobject<USkeletalMeshComponent>("WeaponMesh");
 	SetRootComponent(WeaponMesh);
+	WeaponMesh->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+	WeaponMesh->SetSimulatePhysics(true);
 
-	//SetRootComponent(WeaponMesh);
-
-	//WeaponMesh = CreateDefaultSubobject<USkeletalMesh>("WeaponMesh");
 
 	CollisionComponent = CreateDefaultSubobject<USphereComponent>("SphereComponent");
 	CollisionComponent->InitSphereRadius(70.0f);
@@ -254,7 +253,8 @@ void ASTU_Base_Weapon::NotifyActorBeginOverlap(AActor* OtherActor)
 		InfoOnPickup(true);
 	}
 
-	SetSimulatePhysicsForDrop(false);
+	/////////////////////////////////////////////////SetSimulatePhysicsForDrop(false);
+	SetSimulatePhysicsForDrop(true);
 
 	WeaponMesh->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);
 
@@ -308,7 +308,14 @@ void ASTU_Base_Weapon::SetCollisionForWeaponOnHand()
 {
 	WeaponMesh->SetSimulatePhysics(false);
 
-	WeaponMesh->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
+	WeaponMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+	WeaponMesh->SetNotifyRigidBodyCollisionBelow(false);
+	
+
+	CollisionComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+	//WeaponMesh->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
 
 	CollisionComponent->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
 }
