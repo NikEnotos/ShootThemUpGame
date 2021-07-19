@@ -35,6 +35,8 @@ public:
 
 	TSubclassOf<ASTU_Base_Weapon> GetWeaponClass() { return GetClass(); }
 
+	UAnimMontage* GetReloadAnimMontage() { return ReloadAnimMontage; }
+
 	void SetSimulatePhysicsForDrop(bool IsSimulate);
 	void SetCollisionForWeaponOnHand();
 
@@ -81,6 +83,9 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Weapon")
 		FAmmoData DefaultAmmo {15, 10, false};
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Weapon")
+		UAnimMontage* ReloadAnimMontage;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "UI")
 		FWeaponUIData UIData;

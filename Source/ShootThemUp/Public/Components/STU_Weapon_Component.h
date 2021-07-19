@@ -45,14 +45,17 @@ public:
 
 	bool DropCurrentWeapon();
 
-	TArray<ASTU_Base_Weapon*> GetWeapons() { return Weapons; }
+	//TArray<ASTU_Base_Weapon*> GetWeapons() { return Weapons; }
 
 protected:
 
 	bool CanPickup = false;
 
+	//UPROPERTY(EditDefaultsOnly, Category = "Weapon")
+	//TArray<FWeaponData> WeaponData;
+
 	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
-	TArray<FWeaponData> WeaponData;
+		TArray<TSubclassOf<ASTU_Base_Weapon>> WeaponData;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
 	FName WeaponEquipSocketName = "WeaponSocket";

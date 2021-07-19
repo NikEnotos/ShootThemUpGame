@@ -30,9 +30,11 @@ void USTU_Weapon_Component::BeginPlay()
 	//checkf(WeaponData.Num() == WeaponNum, TEXT("Our character can hold only %i weapon items"), WeaponNum);
 
 	CurrentWeaponIndex = 0;
-	InitAnimations();
+
 	SpawnWeapons();
-	
+
+	InitAnimations();
+
 	EquipWeapon(CurrentWeaponIndex);
 }
 
@@ -61,8 +63,12 @@ void USTU_Weapon_Component::SpawnWeapons()
 	{
 		auto OneWeaponData = WeaponData[FMath::Rand() % WeaponData.Num()];
 
-		auto Weapon = GetWorld()->SpawnActor<ASTU_Base_Weapon>(OneWeaponData.WeaponClass);
-		if (!Weapon) continue;
+		auto Weapon = GetWorld()->SpawnActor<ASTU_Base_Weapon>(OneWeaponData);
+		if (!Weapon)
+		{
+			UE_LOG(LogWeaponComponent, Error, TEXT("Weapon is forgotten to set (invalid)"));
+			checkNoEntry();
+		}
 
 		Weapon->OnClipEmpty.AddUObject(this, &USTU_Weapon_Component::OnClipEmpty);
 
@@ -107,11 +113,12 @@ void USTU_Weapon_Component::EquipWeapon(int32 WeaponIndex)
 	CurrentWeapon = Weapons[WeaponIndex];
 
 	//CurrentReloadAnimMontage = WeaponData[WeaponIndex].ReloadAnimMontage; // Not correct way
-	const auto CurrentWeaponData = WeaponData.FindByPredicate([&](const FWeaponData& Data) {		//
-		return Data.WeaponClass == CurrentWeapon->GetClass();										//
-	});
+	
+	/*const auto CurrentWeaponData = WeaponData.FindByPredicate([&](const FWeaponData& Data) { return Data.WeaponClass == CurrentWeapon->GetClass(); });*/
 
-	CurrentReloadAnimMontage = CurrentWeaponData ? CurrentWeaponData->ReloadAnimMontage : nullptr;
+	//CurrentReloadAnimMontage = CurrentWeaponData ? CurrentWeaponData->ReloadAnimMontage : nullptr;
+
+	CurrentReloadAnimMontage = CurrentWeapon->GetReloadAnimMontage();
 
 	AttachWeaponToSocket(CurrentWeapon, Character->GetMesh(), WeaponEquipSocketName);
 
@@ -169,9 +176,11 @@ void USTU_Weapon_Component::InitAnimations()
 		checkNoEntry();
 	}
 
-	for (auto OneWeaponData : WeaponData)
+	for (auto OneWeaponData : Weapons/*WeaponData*/)
 	{
-		auto ReloadFinishedNotify = AnimUtils::FindNotifyByClass<USTU_ReloadAnimNotify>(OneWeaponData.ReloadAnimMontage);
+		//auto OneWeapon = Cast<ASTU_Base_Weapon>(OneWeaponData);
+		if (!OneWeaponData) continue;
+		auto ReloadFinishedNotify = AnimUtils::FindNotifyByClass<USTU_ReloadAnimNotify>(OneWeaponData->GetReloadAnimMontage());
 		if (!ReloadFinishedNotify)
 		{
 			UE_LOG(LogWeaponComponent, Error, TEXT("Reload anim notify is forgotten to set"));
@@ -376,6 +385,17 @@ bool USTU_Weapon_Component::PickupWeapon(TSubclassOf<ASTU_Base_Weapon> PickupedW
 	Weapon->InfoOnPickup(false);
 
 	Weapons[CurrentWeaponIndex] = Weapon;
+
+	auto ReloadFinishedNotify = AnimUtils::FindNotifyByClass<USTU_ReloadAnimNotify>(Weapon->GetReloadAnimMontage());
+	if (!ReloadFinishedNotify)
+	{
+		UE_LOG(LogWeaponComponent, Error, TEXT("Reload anim notify is forgotten to set"));
+		checkNoEntry();
+	}
+
+	ReloadFinishedNotify->OnNotified.AddUObject(this, &USTU_Weapon_Component::OnReloadFinished);  //Sign up for the delegate that activates when the triger in outfit animation is triggered
+
+	CurrentReloadAnimMontage = Weapon->GetReloadAnimMontage();
 
 	AttachWeaponToSocket(Weapon, Character->GetMesh(), WeaponEquipSocketName);
 		//Weapons.Add(Weapon);
