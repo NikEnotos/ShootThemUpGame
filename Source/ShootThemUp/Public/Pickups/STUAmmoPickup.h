@@ -12,6 +12,10 @@ UCLASS()
 class SHOOTTHEMUP_API ASTUAmmoPickup : public ASTUBasePickup
 {
 	GENERATED_BODY()
+
+public:
+
+	TSubclassOf<ASTU_Base_Weapon> GetWeaponType() { return WeaponType; }
 	
 protected:
 

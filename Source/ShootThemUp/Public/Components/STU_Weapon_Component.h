@@ -23,6 +23,8 @@ public:
 	virtual void NextWeapon();
 	void Reload();
 
+	ASTU_Base_Weapon* GetCurrentWeapon() { return CurrentWeapon; }
+
 	bool GetCurrentWeaponUIData(FWeaponUIData& UIData) const;
 	bool GetCurrentWeaponAmmoData(FAmmoData& AmmoData) const;
 

@@ -5,6 +5,7 @@
 #include "AIController.h"
 #include "STUUtils.h"
 #include "Components/STU_Weapon_Component.h"
+#include "Weapon/STU_Base_Weapon.h"
 
 USTUNeedAmmoDecorator::USTUNeedAmmoDecorator()
 {
@@ -19,5 +20,7 @@ bool USTUNeedAmmoDecorator::CalculateRawConditionValue(UBehaviorTreeComponent& O
 	const auto WeaponComponent = STUUtils::GetSTUPlayerComponent<USTU_Weapon_Component>(Controller->GetPawn());
 	if (!WeaponComponent) return false;
 
-	return WeaponComponent->NeedAmmo(WeaponType);
+	return WeaponComponent->NeedAmmo((WeaponComponent->GetCurrentWeapon())->GetClass());
+
+	//return WeaponComponent->NeedAmmo(WeaponType);
 }
