@@ -204,3 +204,44 @@ void ASTU_Rifle_Weapon::PlayCameraShakeOnShot() const
 	Controller->PlayerCameraManager->StartCameraShake(CameraShakeOnShot);
 
 }
+
+void ASTU_Rifle_Weapon::MakeSingleShot()
+{
+	if (!GetWorld()) return;
+
+	if (IsAmmoEmpty())
+	{
+		UGameplayStatics::SpawnSoundAtLocation(GetWorld(), NoAmmoSound, GetActorLocation());
+		StopFire();
+		return;
+	}
+
+	InitFX();
+
+	FVector TraceStart, TraceEnd;
+	if (!GetTraceData(TraceStart, TraceEnd)) return;
+
+	FHitResult HitResult;
+	MakeHit(HitResult, TraceStart, TraceEnd);
+
+	FVector TraceFXEnd = TraceEnd;
+
+	if (HitResult.bBlockingHit)
+	{
+		TraceFXEnd = HitResult.ImpactPoint;
+
+		MakeDamage(HitResult);
+
+		WeaponFXComponent->PlayImpactFX(HitResult);
+	}
+
+	SpawnTraceFX(GetMuzzleWorldLocation(), TraceFXEnd);
+
+	DecreaseAmmo();
+
+	UGameplayStatics::SpawnSoundAtLocation(GetWorld(), FireSound, GetActorLocation());
+
+	PlayCameraShakeOnShot();
+
+	SetFXActive(false);
+}

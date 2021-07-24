@@ -47,6 +47,10 @@ public:
 
 	bool DropCurrentWeapon();
 
+	void SingleShots(float MinDelay, float MaxDelay);
+
+	void MakeSingleShot();
+
 	//TArray<ASTU_Base_Weapon*> GetWeapons() { return Weapons; }
 
 protected:
@@ -92,6 +96,8 @@ protected:
 	void EquipWeapon(int32 WeaponIndex);
 
 private:
+
+	FTimerHandle TimerBetweenSingleShots;
 
 	UPROPERTY()
 	UAnimMontage* CurrentReloadAnimMontage = nullptr;

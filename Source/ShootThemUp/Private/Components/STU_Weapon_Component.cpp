@@ -11,6 +11,7 @@
 #include "STUUtils.h"
 #include "GameFramework/Actor.h"
 
+#include "TimerManager.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogWeaponComponent, All, All);
 
@@ -99,6 +100,8 @@ void USTU_Weapon_Component::EquipWeapon(int32 WeaponIndex)
 		return;
 	}
 
+	GetWorld()->GetTimerManager().ClearTimer(TimerBetweenSingleShots);
+
 	ACharacter* Character = Cast<ACharacter>(GetOwner());
 
 	if (!Character) return;
@@ -129,8 +132,9 @@ void USTU_Weapon_Component::EquipWeapon(int32 WeaponIndex)
 
 void USTU_Weapon_Component::StartFire()
 {
-	
 	if (!CanFire()) return;
+
+	GetWorld()->GetTimerManager().ClearTimer(TimerBetweenSingleShots);
 
 	CurrentWeapon->StartFire();
 
@@ -138,8 +142,9 @@ void USTU_Weapon_Component::StartFire()
 
 void USTU_Weapon_Component::StopFire()
 {
-
 	if (!CurrentWeapon) return;
+
+	GetWorld()->GetTimerManager().ClearTimer(TimerBetweenSingleShots);
 
 	CurrentWeapon->StopFire();
 
@@ -156,6 +161,8 @@ void USTU_Weapon_Component::NextWeapon()
 
 void USTU_Weapon_Component::PlayAnimMontage(UAnimMontage* Animation)
 {
+	GetWorld()->GetTimerManager().ClearTimer(TimerBetweenSingleShots);
+
 	ACharacter* Character = Cast<ACharacter>(GetOwner());
 
 	if (!Character) return;
@@ -233,6 +240,8 @@ bool USTU_Weapon_Component::CanReload() const
 
 void USTU_Weapon_Component::Reload()
 {
+	GetWorld()->GetTimerManager().ClearTimer(TimerBetweenSingleShots);
+
 	ChangeClip();
 }
 
@@ -329,11 +338,6 @@ void USTU_Weapon_Component::SetWantToPickupWeapon(bool DoWants)
 
 	if (!DoWants) return;
 
-	//ACharacter* Character = Cast<ACharacter>(GetOwner());
-	//if (!Character || !GetWorld()) return;
-
-
-	 //Character->GetOverlappingActors(OverlapingActors);
 	TArray<AActor*> OverlapingActors;
 
 	GetOwner()->GetOverlappingActors(OverlapingActors);
@@ -362,7 +366,6 @@ void USTU_Weapon_Component::SetWantToPickupWeapon(bool DoWants)
 
 bool USTU_Weapon_Component::PickupWeapon(TSubclassOf<ASTU_Base_Weapon> PickupedWeapon, FAmmoData AmmoInPickupedWeapon)
 {
-	//UE_LOG(LogWeaponComponent, Display, TEXT("--------1 Enter--------CanPickup: %d, WantToPickupWeapon: %d, CanEquip: %d"), CanPickup, WantToPickupWeapon, CanEquip());
 	if (!CanPickup || !WantToPickupWeapon || !CanEquip() || !CurrentWeapon) return false;
 
 	auto IsDropped = DropCurrentWeapon();
@@ -407,8 +410,7 @@ bool USTU_Weapon_Component::PickupWeapon(TSubclassOf<ASTU_Base_Weapon> PickupedW
 
 bool USTU_Weapon_Component::DropCurrentWeapon()
 {
-	//UE_LOG(LogWeaponComponent, Display, TEXT("--------2 Enter-------- CurrentWeapon: %d, EquipAnimInProgres: %d, ReloadAnimInProgres: %d"), CurrentWeapon, EquipAnimInProgres, ReloadAnimInProgres);
-	if (!CurrentWeapon/* || EquipAnimInProgres || ReloadAnimInProgres*/) return false;
+	if (!CurrentWeapon) return false;
 
 	ACharacter* Character = Cast<ACharacter>(GetOwner());
 		if (!Character || !GetWorld()) return false;
@@ -435,7 +437,22 @@ bool USTU_Weapon_Component::DropCurrentWeapon()
 	CurrentWeapon->Destroy();
 
 	CurrentWeapon = nullptr;
-	//NextWeapon();
 
 	return true;
+}
+
+void USTU_Weapon_Component::SingleShots(float MinDelay, float MaxDelay)
+{
+	if (!GetWorld() || GetWorld()->GetTimerManager().IsTimerActive(TimerBetweenSingleShots)) return;
+
+	float TimeBetweenShots = FMath::RandRange(MinDelay, MaxDelay);
+
+	GetWorld()->GetTimerManager().SetTimer(TimerBetweenSingleShots, this, &USTU_Weapon_Component::MakeSingleShot, TimeBetweenShots, false);
+}
+
+void USTU_Weapon_Component::MakeSingleShot()
+{
+	if (CurrentWeapon) CurrentWeapon->MakeSingleShot();
+
+	GetWorld()->GetTimerManager().ClearTimer(TimerBetweenSingleShots);
 }

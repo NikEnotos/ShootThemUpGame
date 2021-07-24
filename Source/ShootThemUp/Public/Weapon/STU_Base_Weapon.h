@@ -60,6 +60,8 @@ public:
 
 	void IsPickupped(bool IsPiskupped);
 
+	virtual void MakeSingleShot();
+
 protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")

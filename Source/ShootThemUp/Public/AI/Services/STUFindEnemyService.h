@@ -20,6 +20,9 @@ protected:
 	UPROPERTY(EditAnyWhere, BlueprintReadWrite, Category = "AI")
 		FBlackboardKeySelector EnemyActorKey;
 
+	UPROPERTY(EditAnyWhere, BlueprintReadWrite, Category = "AI")
+		FBlackboardKeySelector EnemyLocationKey;
+
 	virtual void TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds) override;
 
 };

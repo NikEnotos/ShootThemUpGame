@@ -23,13 +23,22 @@ void USTUFireService::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMem
 
 	const auto HasAim = Blackboard && Blackboard->GetValueAsObject(EnemyActorKey.SelectedKeyName);
 
+	const auto AimLocation = Blackboard->GetValueAsVector(EnemyLocationKey.SelectedKeyName);
+
 	if (Controller)
 	{
 		const auto WeaponComponent = STUUtils::GetSTUPlayerComponent<USTU_Weapon_Component>(Controller->GetPawn());
 
-		if (WeaponComponent && !HealthComponent->IsDead())
+		if (WeaponComponent && !HealthComponent->IsDead() && Pawn)
 		{
-			HasAim ? WeaponComponent->StartFire() : WeaponComponent->StopFire();
+			if (FVector::Dist(AimLocation, Pawn->GetActorLocation()) <= DistanceToAutofire)
+			{
+				HasAim ? WeaponComponent->StartFire() : WeaponComponent->StopFire();
+			}
+			else
+			{
+				HasAim ? WeaponComponent->SingleShots(MinDelayToShot, MaxDelayToShot) : WeaponComponent->StopFire();
+			}
 		}
 	}
 

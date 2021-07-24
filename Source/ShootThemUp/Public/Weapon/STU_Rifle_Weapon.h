@@ -30,6 +30,7 @@ public:
 
 	virtual float GetCurrentBulletSpread() override { return CurrentBulletSpread; }
 
+	virtual void MakeSingleShot() override;
 
 protected:
 

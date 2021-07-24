@@ -324,3 +324,8 @@ void ASTU_Base_Weapon::IsPickupped(bool IsPiskupped)
 {
 	if (IsPiskupped) Destroy();
 }
+
+void ASTU_Base_Weapon::MakeSingleShot()
+{
+
+}
