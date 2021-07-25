@@ -29,7 +29,7 @@ public:
 	bool GetCurrentWeaponAmmoData(FAmmoData& AmmoData) const;
 
 	bool TryToAddAmmo(TSubclassOf<ASTU_Base_Weapon> WeaponType, int32 ClipsAmount);
-	bool NeedAmmo(TSubclassOf<ASTU_Base_Weapon> WeaponType);
+	bool NeedAmmo(TSubclassOf<ASTU_Base_Weapon> WeaponType, int32 EnoughClips);
 
 	bool GetWantToPickupWeapon() { return WantToPickupWeapon; }
 	void SetWantToPickupWeapon(bool DoWants);

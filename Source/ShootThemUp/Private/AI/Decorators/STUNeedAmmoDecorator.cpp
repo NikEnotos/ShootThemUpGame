@@ -20,7 +20,7 @@ bool USTUNeedAmmoDecorator::CalculateRawConditionValue(UBehaviorTreeComponent& O
 	const auto WeaponComponent = STUUtils::GetSTUPlayerComponent<USTU_Weapon_Component>(Controller->GetPawn());
 	if (!WeaponComponent) return false;
 
-	return WeaponComponent->NeedAmmo((WeaponComponent->GetCurrentWeapon())->GetClass());
+	return WeaponComponent->NeedAmmo((WeaponComponent->GetCurrentWeapon())->GetClass(), EnoughClips);
 
 	//return WeaponComponent->NeedAmmo(WeaponType);
 }

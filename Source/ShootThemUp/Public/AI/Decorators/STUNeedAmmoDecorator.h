@@ -22,5 +22,8 @@ protected:
 	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI")
 		//TSubclassOf<ASTU_Base_Weapon> WeaponType;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI")
+		int32 EnoughClips = 3;
+
 	virtual bool CalculateRawConditionValue(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) const override;
 };

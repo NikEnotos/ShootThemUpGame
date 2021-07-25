@@ -329,3 +329,8 @@ void ASTU_Base_Weapon::MakeSingleShot()
 {
 
 }
+
+bool ASTU_Base_Weapon::LeftLittleAmmo(int32 EnoughClips)
+{
+	return CurrentAmmo.Clips <= EnoughClips;
+}

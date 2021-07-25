@@ -62,6 +62,8 @@ public:
 
 	virtual void MakeSingleShot();
 
+	bool LeftLittleAmmo(int32 EnoughClips);
+
 protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
