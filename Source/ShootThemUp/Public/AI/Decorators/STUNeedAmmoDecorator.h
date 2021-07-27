@@ -12,7 +12,7 @@ UCLASS()
 class SHOOTTHEMUP_API USTUNeedAmmoDecorator : public UBTDecorator
 {
 	GENERATED_BODY()
-	
+
 public:
 
 	USTUNeedAmmoDecorator();
@@ -23,7 +23,10 @@ protected:
 		//TSubclassOf<ASTU_Base_Weapon> WeaponType;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI")
-		int32 EnoughClips = 3;
+		int32 EnoughClips = 3;	
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI")
+		FBlackboardKeySelector EnoughClipsKey;
 
 	virtual bool CalculateRawConditionValue(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) const override;
 };

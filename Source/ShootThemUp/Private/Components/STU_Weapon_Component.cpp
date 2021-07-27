@@ -78,6 +78,8 @@ void USTU_Weapon_Component::SpawnWeapons()
 		Weapon->SetOwner(Character);
 		Weapons.Add(Weapon);
 
+		Weapon->SetIsDropped(false);
+
 		AttachWeaponToSocket(Weapon, Character->GetMesh(), WeaponArmorySocketName);
 	}
 
@@ -153,6 +155,8 @@ void USTU_Weapon_Component::StopFire()
 void USTU_Weapon_Component::NextWeapon()
 {
 	if (!CanEquip())return;
+
+	GetWorld()->GetTimerManager().ClearTimer(TimerBetweenSingleShots);
 
 	CurrentWeaponIndex = (CurrentWeaponIndex + 1) % Weapons.Num();    // 57 leason time: 10:12
 
@@ -247,6 +251,8 @@ void USTU_Weapon_Component::Reload()
 
 void USTU_Weapon_Component::OnClipEmpty(ASTU_Base_Weapon* AmmoEmptyWeapon)
 {
+	GetWorld()->GetTimerManager().ClearTimer(TimerBetweenSingleShots);
+
 	if (!AmmoEmptyWeapon) return;
 	if (CurrentWeapon == AmmoEmptyWeapon)
 	{
@@ -389,6 +395,8 @@ bool USTU_Weapon_Component::PickupWeapon(TSubclassOf<ASTU_Base_Weapon> PickupedW
 
 	Weapons[CurrentWeaponIndex] = Weapon;
 
+	Weapon->SetIsDropped(false);
+
 	auto ReloadFinishedNotify = AnimUtils::FindNotifyByClass<USTU_ReloadAnimNotify>(Weapon->GetReloadAnimMontage());
 	if (!ReloadFinishedNotify)
 	{
@@ -433,6 +441,8 @@ bool USTU_Weapon_Component::DropCurrentWeapon()
 	
 	Weapons[CurrentWeaponIndex] = nullptr;
 	//Weapons.Remove(CurrentWeapon);
+
+	Weapon->SetIsDropped(true);
 
 	CurrentWeapon->Destroy();
 

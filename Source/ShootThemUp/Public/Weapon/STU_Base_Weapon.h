@@ -64,7 +64,13 @@ public:
 
 	bool LeftLittleAmmo(int32 EnoughClips);
 
+	bool GetIsDropped() { return IsDropped; }
+	void SetIsDropped(bool Dropped) { IsDropped = Dropped; }
+
 protected:
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Weapon")
+	bool IsDropped = false;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
 		USkeletalMeshComponent* WeaponMesh;
